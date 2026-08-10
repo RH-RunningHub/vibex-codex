@@ -1,0 +1,13 @@
+interface:
+  display_name: "VibeX 发布"
+  short_description: "确认并发布指定的 VibeX 项目版本"
+  default_prompt: "使用 $vibex-publish 准备并确认发布我的 VibeX 项目。"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "vibex-codex"
+      description: "VibeX 项目工具"
+      transport: "streamable_http"
+      url: "https://vibex.runninghub.cn/mcp/vibex"
+policy:
+  allow_implicit_invocation: true

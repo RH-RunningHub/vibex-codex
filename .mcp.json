@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "vibex-codex": {
+      "type": "http",
+      "url": "https://vibex.runninghub.cn/mcp/vibex",
+      "auth": "oauth",
+      "oauth_resource": "https://vibex.runninghub.cn/mcp/vibex"
+    }
+  }
+}

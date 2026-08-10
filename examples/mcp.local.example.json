@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "vibex-codex-local": {
+      "type": "http",
+      "url": "http://127.0.0.1:<MCP_PORT>/mcp/vibex"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+interface:
+  display_name: "VibeX 预览"
+  short_description: "预览并验证指定的 VibeX 项目版本"
+  default_prompt: "使用 $vibex-preview 验证我的最新 VibeX 项目版本。"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "vibex-codex"
+      description: "VibeX 项目工具"
+      transport: "streamable_http"
+      url: "https://vibex.runninghub.cn/mcp/vibex"
+policy:
+  allow_implicit_invocation: true

@@ -1,0 +1,37 @@
+{
+  "name": "vibex-codex",
+  "version": "26.8.10-t1615",
+  "description": "\u901a\u8fc7 Codex \u5b89\u5168\u5730\u521b\u5efa\u3001\u67e5\u770b\u3001\u7f16\u8f91\u3001\u9884\u89c8\u548c\u53d1\u5e03 VibeX \u9879\u76ee\u3002",
+  "author": {
+    "name": "RunningHub"
+  },
+  "license": "Apache-2.0",
+  "keywords": [
+    "vibex",
+    "codex",
+    "mcp",
+    "web-app"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "vibex-codex",
+    "shortDescription": "\u5b89\u5168\u6784\u5efa\u548c\u53d1\u5e03 VibeX \u9879\u76ee",
+    "longDescription": "\u5c06 Codex \u8fde\u63a5\u5230\u4f60\u7684 VibeX \u8d26\u6237\uff0c\u7528\u4e8e\u67e5\u627e\u3001\u521b\u5efa\u3001\u67e5\u770b\u3001\u5b89\u5168\u7f16\u8f91\u3001\u9884\u89c8\uff0c\u4ee5\u53ca\u5728\u660e\u786e\u786e\u8ba4\u540e\u53d1\u5e03\u4f60\u62e5\u6709\u7684\u9879\u76ee\u3002",
+    "developerName": "RunningHub",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "defaultPrompt": [
+      "连接并查看我的 VibeX 项目；首次仅申请读取权限，后续预览、创建、编辑或发布时再按需追加对应权限；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。编辑后始终打开内置浏览器预览。",
+      "\u4f7f\u7528 VibeX \u7f16\u7801\u5b89\u5168\u5730\u5b8c\u6210\u8fd9\u9879\u4fee\u6539\uff0c\u7136\u540e\u51c6\u5907\u9884\u89c8\u3002",
+      "\u4f7f\u7528 VibeX \u53d1\u5e03\u51c6\u5907\u53d1\u5e03\u786e\u8ba4\uff1b\u5f97\u5230\u6211\u7684\u660e\u786e\u786e\u8ba4\u540e\u518d\u53d1\u5e03\u3002"
+    ],
+    "brandColor": "#050505",
+    "composerIcon": "./assets/vibex-icon.svg",
+    "logo": "./assets/vibex-icon.svg",
+    "logoDark": "./assets/vibex-icon.svg"
+  }
+}
