@@ -1,5 +1,11 @@
 # Changelog
 
+## 26.8.10-t1958
+
+- Align every public tool's OAuth connection metadata with the MCP transport's five-scope handshake while retaining operation-level scope checks.
+- Add `vibex_initialize_source` so eligible legacy Web projects can create their first immutable source revision before editing.
+- Update all skills, starter prompts, documentation, validators, and contracts to match the runtime service.
+
 ## 26.8.10-t1615
 
 - Apply least-privilege OAuth scopes per public tool and request additional capabilities incrementally.

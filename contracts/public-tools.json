@@ -1,6 +1,6 @@
 {
-  "contractVersion": "1.0.0",
-  "minimumPluginVersion": "1.0.0",
+  "contractVersion": "1.1.0",
+  "minimumPluginVersion": "1.1.0",
   "tools": [
     {
       "name": "vibex_list_projects",
@@ -62,7 +62,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.read"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -123,7 +127,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.read"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -196,7 +204,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.create"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -290,7 +302,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.read"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -391,12 +407,81 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.read"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
       "annotations": {
         "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "vibex_initialize_source",
+      "title": "Initialize VibeX source revision",
+      "description": "Create the initial immutable source revision for an owned running legacy Web project only when project metadata advertises source_initialize and the user already requested an edit. Repeated calls are idempotent. This never edits source or publishes.",
+      "scope": "vibex.projects.edit",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "initialize_sourceArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": false,
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": false
@@ -485,7 +570,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.edit"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -575,7 +664,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.edit"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -705,7 +798,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.edit"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -809,7 +906,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.edit"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -885,7 +986,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.edit"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -975,7 +1080,11 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.preview"
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
           ]
         }
       ],
@@ -1095,6 +1204,10 @@
         {
           "type": "oauth2",
           "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
             "vibex.projects.publish"
           ]
         }
@@ -1178,6 +1291,10 @@
         {
           "type": "oauth2",
           "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
             "vibex.projects.publish"
           ]
         }
@@ -1239,30 +1356,10 @@
         {
           "type": "oauth2",
           "scopes": [
-            "vibex.projects.read"
-          ]
-        },
-        {
-          "type": "oauth2",
-          "scopes": [
-            "vibex.projects.preview"
-          ]
-        },
-        {
-          "type": "oauth2",
-          "scopes": [
-            "vibex.projects.create"
-          ]
-        },
-        {
-          "type": "oauth2",
-          "scopes": [
-            "vibex.projects.edit"
-          ]
-        },
-        {
-          "type": "oauth2",
-          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
             "vibex.projects.publish"
           ]
         }

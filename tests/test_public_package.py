@@ -15,6 +15,13 @@ assert SPEC and SPEC.loader
 VALIDATOR = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(VALIDATOR)
 
+RUNTIME_SPEC = importlib.util.spec_from_file_location(
+    "verify_runtime_contract", ROOT / "scripts" / "verify_runtime_contract.py"
+)
+assert RUNTIME_SPEC and RUNTIME_SPEC.loader
+RUNTIME_VERIFIER = importlib.util.module_from_spec(RUNTIME_SPEC)
+RUNTIME_SPEC.loader.exec_module(RUNTIME_VERIFIER)
+
 
 def test_public_package_boundary() -> None:
     assert VALIDATOR.validate(ROOT) == []
@@ -27,9 +34,9 @@ def test_plugin_listing_uses_vibex_codex_name_and_chinese_prompts() -> None:
     assert interface["displayName"] == "vibex-codex"
     assert interface["defaultPrompt"] == VALIDATOR.EXPECTED_DEFAULT_PROMPTS
     assert interface["defaultPrompt"][0] == (
-        "连接并查看我的 VibeX 项目；首次仅申请读取权限，后续预览、创建、编辑或发布时再按需"
-        "追加对应权限；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。编辑后"
-        "始终打开内置浏览器预览。"
+        "连接并查看我的 VibeX 项目；首次连接一次授权读取、创建、编辑、预览和发布五项权限；"
+        "各工具仍按操作权限校验，发布必须另行明确确认。无法自动授权时，请到插件的 MCP服务"
+        "器齿轮中选择“发起授权”。"
     )
 
 
@@ -66,16 +73,28 @@ def test_plugin_version_is_semver_safe_for_zero_padded_times() -> None:
 def test_contract_has_exact_tool_allowlist() -> None:
     contract = json.loads((ROOT / "contracts" / "public-tools.json").read_text())
     assert [tool["name"] for tool in contract["tools"]] == VALIDATOR.EXPECTED_TOOLS
-    assert len(contract["tools"]) == 14
+    assert len(contract["tools"]) == 15
     for tool in contract["tools"]:
-        if tool["scope"] in VALIDATOR.EXPECTED_OAUTH_SCOPES:
-            expected = [{"type": "oauth2", "scopes": [tool["scope"]]}]
-        else:
-            expected = [
-                {"type": "oauth2", "scopes": [scope]}
-                for scope in VALIDATOR.EXPECTED_OAUTH_SCOPES
-            ]
+        expected = [
+            {"type": "oauth2", "scopes": VALIDATOR.EXPECTED_OAUTH_SCOPES}
+        ]
         assert tool["securitySchemes"] == expected
+
+
+def test_runtime_contract_verifier_detects_cross_repository_drift(
+    tmp_path: Path,
+) -> None:
+    public = ROOT / "contracts" / "public-tools.json"
+    runtime = tmp_path / "runtime.json"
+    runtime.write_text(public.read_text(encoding="utf-8"), encoding="utf-8")
+    assert RUNTIME_VERIFIER.verify(runtime, public) == []
+
+    payload = json.loads(runtime.read_text(encoding="utf-8"))
+    payload["tools"] = payload["tools"][:-1]
+    runtime.write_text(json.dumps(payload), encoding="utf-8")
+    assert any(
+        "differs" in error for error in RUNTIME_VERIFIER.verify(runtime, public)
+    )
 
 
 def test_validator_uses_non_reversible_private_denylist() -> None:

@@ -10,7 +10,7 @@ Preview the exact stable revision the user intends to inspect. Preview is verifi
 ## Prepare the preview
 
 1. Call `vibex_get_project` and choose the exact stable `source_revision` to verify.
-2. Call `vibex_prepare_preview` with that revision and a fresh idempotency key. If the service reports a missing scope, request only `vibex.projects.preview`, then retry the same request with the same idempotency key.
+2. Call `vibex_prepare_preview` with that revision and a fresh idempotency key. If the service reports an authentication or scope error, renew the complete VibeX OAuth connection, then retry the same request with the same idempotency key.
 3. Use the returned launch URL only for this preview. It is short-lived and single-use.
 
 ## Choose the opening method

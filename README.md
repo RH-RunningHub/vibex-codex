@@ -15,13 +15,13 @@
 - Apply path-scoped patches inside isolated, lease-protected edit sessions.
 - Preview the exact revision being reviewed with a short-lived launch URL.
 - Publish only after an explicit confirmation bound to the revision and target.
-- Request OAuth permissions incrementally, when each capability is first used.
+- Establish one complete five-scope OAuth connection while enforcing each tool's narrower operation scope.
 
 ## Install and connect
 
 Install the plugin through the plugin flow provided by your Codex client, using this repository as the source. The checked-in manifest is [`.codex-plugin/plugin.json`](./.codex-plugin/plugin.json), and the MCP connection is declared in [`.mcp.json`](./.mcp.json).
 
-When Codex first connects, authorize project read access. Additional permissions are requested only when you create, edit, preview, or publish a project. If the client cannot open the authorization flow automatically, open **Plugins → vibex-codex → MCP server → Settings → Start authorization**.
+When Codex first connects, authorize the five project scopes requested by the MCP transport. The service still checks the narrower operation scope for every tool, and the connection grant never replaces an explicit request to create, edit, preview, or publish. If the client cannot open the authorization flow automatically, open **Plugins → vibex-codex → MCP server → Settings → Start authorization**.
 
 The production endpoint is:
 
@@ -50,14 +50,14 @@ The normal workflow is:
 
 ## Included skills
 
-| Skill | Purpose | OAuth scope requested when needed |
+| Skill | Purpose | Operation scope enforced by the tool |
 |---|---|---|
 | `$vibex-projects` | Find, inspect, and create owned projects | `vibex.projects.read` or `vibex.projects.create` |
 | `$vibex-coding` | Read and safely edit a stable source revision | `vibex.projects.read` or `vibex.projects.edit` |
 | `$vibex-preview` | Prepare and verify a revision-pinned preview | `vibex.projects.preview` |
 | `$vibex-publish` | Prepare, confirm, and execute publication | `vibex.projects.publish` |
 
-Operation-status polling accepts any one already granted VibeX project scope. A read-only connection does not require create, edit, preview, or publish access.
+The MCP transport establishes all five scopes in one connection so every tool can be discovered reliably. Operation-status polling accepts any project scope, while each state-changing tool still enforces its own scope and user-intent boundary.
 
 ## Security model
 
@@ -66,7 +66,7 @@ The plugin is intentionally client-only: this repository contains the manifest, 
 Its main safety boundaries are:
 
 - **Owner scope:** project operations apply only to the signed-in user's projects.
-- **Least privilege:** each tool declares only the OAuth permission needed for that operation.
+- **Layered authorization:** the transport establishes the complete connection grant, while each tool enforces only its operation scope and all state changes still require matching user intent.
 - **Stable revisions:** reads, edits, previews, and publication target explicit source revisions.
 - **Bounded editing:** changed paths are declared before a lease-protected edit session begins.
 - **Fenced writes:** stale leases and fencing values cannot be reused.
@@ -91,7 +91,7 @@ The Browser capability is not bundled with this plugin and does not use the user
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex plugin manifest
 ├── .mcp.json                    # Public OAuth MCP connection
-├── contracts/public-tools.json # Public 14-tool contract
+├── contracts/public-tools.json # Public 15-tool contract
 ├── skills/                      # Projects, coding, preview, and publish skills
 ├── scripts/                     # Public-package build and validation
 ├── tests/                       # Boundary and contract tests

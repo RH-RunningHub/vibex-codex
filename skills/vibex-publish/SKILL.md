@@ -11,7 +11,7 @@ Publishing is a separate, explicit two-step confirmation flow.
 
 1. Confirm the user explicitly requested publication. Phrases such as “改完了”, “预览通过”, or “继续” are not publication authorization.
 2. Call `vibex_get_project` and identify the exact stable revision.
-3. Call `vibex_prepare_publish` with that revision, target, visibility, and a fresh idempotency key. If the service reports a missing scope, request only `vibex.projects.publish`, then retry the same request with the same idempotency key.
+3. Call `vibex_prepare_publish` with that revision, target, visibility, and a fresh idempotency key. If the service reports an authentication or scope error, renew the complete VibeX OAuth connection, then retry the same request with the same idempotency key.
 4. Show the returned project, revision, target, visibility, address options, and confirmation digest in a concise summary.
 5. Ask the user to explicitly confirm that exact summary. Do not call the publish tool in the same step unless the user's current message already unambiguously confirms the displayed summary.
 

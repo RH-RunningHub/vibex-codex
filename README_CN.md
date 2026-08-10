@@ -15,13 +15,13 @@
 - 在隔离、带租约的编辑会话中应用路径受限补丁。
 - 使用短期链接预览正在检查的精确源码版本。
 - 只有明确确认版本和目标后才执行发布。
-- 首次使用某项能力时才增量申请对应 OAuth 权限。
+- 首次连接一次完成五项 OAuth 授权，每个工具仍按更窄的操作权限执行校验。
 
 ## 安装与连接
 
 通过 Codex 客户端提供的插件安装流程，以本仓库作为插件来源。插件清单位于 [`.codex-plugin/plugin.json`](./.codex-plugin/plugin.json)，MCP 连接配置位于 [`.mcp.json`](./.mcp.json)。
 
-首次连接时只授权项目读取权限。创建、编辑、预览或发布项目时，再按需申请对应权限。如果客户端无法自动打开授权流程，请进入 **插件 → vibex-codex → MCP服务器 → 设置 → 发起授权**。
+首次连接时授权 MCP 传输层请求的五项项目权限。服务端仍会为每个工具校验更窄的操作权限，连接授权本身不等于允许创建、编辑、预览或发布。如果客户端无法自动打开授权流程，请进入 **插件 → vibex-codex → MCP服务器 → 设置 → 发起授权**。
 
 生产服务地址：
 
@@ -50,14 +50,14 @@ https://vibex.runninghub.cn/mcp/vibex
 
 ## 内置 Skill
 
-| Skill | 用途 | 使用时按需申请的 OAuth 权限 |
+| Skill | 用途 | 工具执行时校验的操作权限 |
 |---|---|---|
 | `$vibex-projects` | 查询、查看和创建本人项目 | `vibex.projects.read` 或 `vibex.projects.create` |
 | `$vibex-coding` | 读取并安全编辑稳定源码版本 | `vibex.projects.read` 或 `vibex.projects.edit` |
 | `$vibex-preview` | 准备并验证绑定版本的预览 | `vibex.projects.preview` |
 | `$vibex-publish` | 准备、确认并执行发布 | `vibex.projects.publish` |
 
-任务状态查询接受任意一项已经授权的 VibeX 项目权限。只读连接不需要创建、编辑、预览或发布权限。
+MCP 传输层会在首次连接时一次建立五项权限，确保所有工具都能稳定发现。任务状态查询接受任意项目权限，而所有状态变更工具仍会校验自己的操作权限和用户意图边界。
 
 ## 安全模型
 
@@ -66,7 +66,7 @@ https://vibex.runninghub.cn/mcp/vibex
 主要安全边界包括：
 
 - **本人项目：** 项目操作只作用于当前登录用户拥有的项目。
-- **最小权限：** 每个工具只声明本次操作实际需要的 OAuth 权限。
+- **分层授权：** 传输层建立完整连接授权，每个工具只执行自己的操作权限校验，所有状态变更仍必须符合用户当前意图。
 - **稳定版本：** 读取、编辑、预览和发布都绑定明确源码版本。
 - **有限编辑：** 开始带租约的编辑会话前必须先声明修改路径。
 - **写入防护：** 过期租约和旧 fencing 值不能重复使用。
@@ -91,7 +91,7 @@ Browser 能力不随本插件打包，也不会使用用户日常浏览器配置
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex 插件清单
 ├── .mcp.json                    # 公开 OAuth MCP 连接
-├── contracts/public-tools.json # 14 个公开工具的契约
+├── contracts/public-tools.json # 15 个公开工具的契约
 ├── skills/                      # 项目、编码、预览和发布 Skill
 ├── scripts/                     # 公开包构建与校验脚本
 ├── tests/                       # 边界和契约测试

@@ -39,6 +39,7 @@ EXPECTED_TOOLS = [
     "vibex_create_project",
     "vibex_get_source_tree",
     "vibex_read_source_file",
+    "vibex_initialize_source",
     "vibex_begin_edit",
     "vibex_renew_edit",
     "vibex_apply_patch",
@@ -65,7 +66,7 @@ VERSION_PATTERN = re.compile(
     r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
 )
 EXPECTED_DEFAULT_PROMPTS = [
-    "连接并查看我的 VibeX 项目；首次仅申请读取权限，后续预览、创建、编辑或发布时再按需追加对应权限；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。编辑后始终打开内置浏览器预览。",
+    "连接并查看我的 VibeX 项目；首次连接一次授权读取、创建、编辑、预览和发布五项权限；各工具仍按操作权限校验，发布必须另行明确确认。无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。",
     "使用 VibeX 编码安全地完成这项修改，然后准备预览。",
     "使用 VibeX 发布准备发布确认；得到我的明确确认后再发布。",
 ]
@@ -74,7 +75,7 @@ EXPECTED_SKILL_INTERFACE = {
     "vibex-preview": ("VibeX 预览", "使用 $vibex-preview 验证我的最新 VibeX 项目版本。"),
     "vibex-projects": (
         "VibeX 项目",
-        "使用 $vibex-projects 连接 VibeX；首次仅申请读取权限，后续预览、创建、编辑或发布时再按需追加对应权限；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。编辑后始终打开内置浏览器预览。",
+        "使用 $vibex-projects 连接 VibeX；首次连接一次授权五项项目权限，各工具仍按操作权限校验，发布必须另行明确确认；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。",
     ),
     "vibex-publish": ("VibeX 发布", "使用 $vibex-publish 准备并确认发布我的 VibeX 项目。"),
 }
@@ -117,13 +118,8 @@ def _contains_forbidden_fragment(
 
 
 def _expected_security_schemes(scope: object) -> list[dict[str, object]]:
-    if scope in EXPECTED_OAUTH_SCOPES:
-        return [{"type": "oauth2", "scopes": [scope]}]
-    if scope == "any granted VibeX project scope":
-        return [
-            {"type": "oauth2", "scopes": [candidate]}
-            for candidate in EXPECTED_OAUTH_SCOPES
-        ]
+    if scope in EXPECTED_OAUTH_SCOPES or scope == "any granted VibeX project scope":
+        return [{"type": "oauth2", "scopes": EXPECTED_OAUTH_SCOPES}]
     return []
 
 
@@ -192,7 +188,7 @@ def validate(root: Path = ROOT) -> list[str]:
         contract = {}
     names = [tool.get("name") for tool in contract.get("tools", [])]
     if names != EXPECTED_TOOLS:
-        errors.append("public contract must contain the exact ordered 14-tool allowlist")
+        errors.append("public contract must contain the exact ordered 15-tool allowlist")
     else:
         for tool in contract["tools"]:
             expected_security_schemes = _expected_security_schemes(tool.get("scope"))
@@ -200,7 +196,7 @@ def validate(root: Path = ROOT) -> list[str]:
                 errors.append(f'{tool["name"]}: declares an unsupported OAuth scope')
             elif tool.get("securitySchemes") != expected_security_schemes:
                 errors.append(
-                    f'{tool["name"]}: must declare only the minimum operation scope'
+                    f'{tool["name"]}: must declare the complete connection scope set'
                 )
 
     secret_assignment = re.compile(
