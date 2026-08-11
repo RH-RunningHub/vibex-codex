@@ -6,7 +6,7 @@
 [![English](https://img.shields.io/badge/Language-English-2563EB)](./README.md)
 [![简体中文](https://img.shields.io/badge/Language-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-EF4444)](./README_CN.md)
 
-`vibex-codex` is the open-source Codex plugin for creating, inspecting, editing, previewing, and publishing VibeX web projects. It connects Codex to the public VibeX MCP endpoint through Codex-managed OAuth; no API key or local credential file is required.
+`vibex-codex` is the open-source Codex plugin for creating, inspecting, editing, previewing, pricing, and publishing VibeX web projects. It connects Codex to the public VibeX MCP endpoint through Codex-managed OAuth; no API key or local credential file is required.
 
 ## Highlights
 
@@ -15,13 +15,14 @@
 - Apply path-scoped patches inside isolated, lease-protected edit sessions.
 - Preview the exact revision being reviewed with a short-lived launch URL.
 - Publish only after an explicit confirmation bound to the revision and target.
-- Establish one complete five-scope OAuth connection while enforcing each tool's narrower operation scope.
+- Inspect saved and effective creator pricing, with separate confirmations for pricing and publication.
+- Establish one complete six-scope OAuth connection while enforcing each tool's narrower operation scope.
 
 ## Install and connect
 
 Install the plugin through the plugin flow provided by your Codex client, using this repository as the source. The checked-in manifest is [`.codex-plugin/plugin.json`](./.codex-plugin/plugin.json), and the MCP connection is declared in [`.mcp.json`](./.mcp.json).
 
-When Codex first connects, authorize the five project scopes requested by the MCP transport. The service still checks the narrower operation scope for every tool, and the connection grant never replaces an explicit request to create, edit, preview, or publish. If the client cannot open the authorization flow automatically, open **Plugins → vibex-codex → MCP server → Settings → Start authorization**.
+When Codex first connects, authorize the six project scopes requested by the MCP transport. The service still checks the narrower operation scope for every tool, and the connection grant never replaces an explicit request to create, edit, preview, price, or publish. If the client cannot open the authorization flow automatically, open **Plugins → vibex-codex → MCP server → Settings → Start authorization**.
 
 The production endpoint is:
 
@@ -46,7 +47,8 @@ The normal workflow is:
 1. `$vibex-projects` resolves or explicitly creates one owned project.
 2. `$vibex-coding` pins a source revision, displays a bounded file plan, applies patches in an isolated workspace, and commits a new stable revision.
 3. `$vibex-preview` prepares and verifies a short-lived preview for that exact revision.
-4. `$vibex-publish` prepares a confirmation summary and publishes only after explicit approval.
+4. `$vibex-pricing` inspects or explicitly changes creator pricing, then verifies saved and effective state.
+5. `$vibex-publish` prepares a confirmation summary and publishes only after explicit approval.
 
 ## Included skills
 
@@ -55,9 +57,10 @@ The normal workflow is:
 | `$vibex-projects` | Find, inspect, and create owned projects | `vibex.projects.read` or `vibex.projects.create` |
 | `$vibex-coding` | Read and safely edit a stable source revision | `vibex.projects.read` or `vibex.projects.edit` |
 | `$vibex-preview` | Prepare and verify a revision-pinned preview | `vibex.projects.preview` |
+| `$vibex-pricing` | Inspect, confirm, set, and verify creator pricing | `vibex.projects.pricing` |
 | `$vibex-publish` | Prepare, confirm, and execute publication | `vibex.projects.publish` |
 
-The MCP transport establishes all five scopes in one connection so every tool can be discovered reliably. Operation-status polling accepts any project scope, while each state-changing tool still enforces its own scope and user-intent boundary.
+The MCP transport establishes all six scopes in one connection so every tool can be discovered reliably. Operation-status polling accepts any project scope, while each state-changing tool still enforces its own scope and user-intent boundary.
 
 ## Security model
 
@@ -91,8 +94,8 @@ The Browser capability is not bundled with this plugin and does not use the user
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex plugin manifest
 ├── .mcp.json                    # Public OAuth MCP connection
-├── contracts/public-tools.json # Public 17-tool contract
-├── skills/                      # Projects, coding, preview, and publish skills
+├── contracts/public-tools.json # Public 20-tool contract
+├── skills/                      # Projects, coding, preview, pricing, and publish skills
 ├── scripts/                     # Public-package build and validation
 ├── tests/                       # Boundary and contract tests
 └── assets/                      # Plugin artwork

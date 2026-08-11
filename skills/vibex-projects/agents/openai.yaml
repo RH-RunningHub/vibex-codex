@@ -1,7 +1,7 @@
 interface:
   display_name: "VibeX 项目"
   short_description: "查找、查看和创建你的 VibeX 项目"
-  default_prompt: "使用 $vibex-projects 连接 VibeX；首次连接一次授权五项项目权限，各工具仍按操作权限校验，发布必须另行明确确认；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。"
+  default_prompt: "使用 $vibex-projects 连接 VibeX；首次连接一次授权六项项目权限，各工具仍按操作权限校验，改价和发布必须分别明确确认；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。"
 dependencies:
   tools:
     - type: "mcp"

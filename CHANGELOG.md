@@ -1,5 +1,11 @@
 # Changelog
 
+## 26.8.11-t2053
+
+- Add creator-pricing inspection, confirmation, application, and verification tools with a dedicated six-scope OAuth permission.
+- Keep pricing and publication as separate explicit confirmations, and report saved versus effective pricing without claiming an unpublished value is live.
+- Teach Codex to upgrade only eligible standard-model hooks and to avoid AI-application revenue flows.
+
 ## 26.8.11-t1945
 
 - Wait for the server to reap an expired edit lease before starting a replacement session, and report a stuck edit instead of repeatedly acquiring new locks.

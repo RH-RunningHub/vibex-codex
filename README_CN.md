@@ -6,7 +6,7 @@
 [![English](https://img.shields.io/badge/Language-English-2563EB)](./README.md)
 [![简体中文](https://img.shields.io/badge/Language-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-EF4444)](./README_CN.md)
 
-`vibex-codex` 是用于创建、查看、编辑、预览和发布 VibeX Web 项目的开源 Codex 插件。它通过 Codex 管理的 OAuth 连接公开 VibeX MCP 服务，不需要 API Key 或本地凭据文件。
+`vibex-codex` 是用于创建、查看、编辑、预览、自定价和发布 VibeX Web 项目的开源 Codex 插件。它通过 Codex 管理的 OAuth 连接公开 VibeX MCP 服务，不需要 API Key 或本地凭据文件。
 
 ## 核心特点
 
@@ -15,14 +15,15 @@
 - 在隔离、带租约的编辑会话中应用路径受限补丁。
 - 使用短期链接预览正在检查的精确源码版本。
 - 发布前检查服务状态，展示封面、标题、简介、分类等完整参数，只有明确确认后才执行发布。
+- 查询创作者定价的保存值和线上生效值；改价与发布分别确认，未发布的价格不会被误报为已生效。
 - OAuth 访问令牌过期时自动请求刷新；自动恢复失败时给出明确的重新授权入口，不再绕到浏览器上传。
-- 首次连接一次完成五项 OAuth 授权，每个工具仍按更窄的操作权限执行校验。
+- 首次连接一次完成六项 OAuth 授权，每个工具仍按更窄的操作权限执行校验。
 
 ## 安装与连接
 
 通过 Codex 客户端提供的插件安装流程，以本仓库作为插件来源。插件清单位于 [`.codex-plugin/plugin.json`](./.codex-plugin/plugin.json)，MCP 连接配置位于 [`.mcp.json`](./.mcp.json)。
 
-首次连接时授权 MCP 传输层请求的五项项目权限。服务端仍会为每个工具校验更窄的操作权限，连接授权本身不等于允许创建、编辑、预览或发布。如果客户端无法自动打开授权流程，请进入 **插件 → vibex-codex → MCP服务器 → 设置 → 发起授权**。
+首次连接时授权 MCP 传输层请求的六项项目权限。服务端仍会为每个工具校验更窄的操作权限，连接授权本身不等于允许创建、编辑、预览、定价或发布。如果客户端无法自动打开授权流程，请进入 **插件 → vibex-codex → MCP服务器 → 设置 → 发起授权**。
 
 生产服务地址：
 
@@ -47,7 +48,8 @@ https://vibex.runninghub.cn/mcp/vibex
 1. `$vibex-projects` 查询、选择或明确新建一个本人项目。
 2. `$vibex-coding` 固定源码版本、展示有限文件计划，在隔离工作区应用补丁并提交新稳定版本。
 3. `$vibex-preview` 为该精确版本准备短期预览并执行验证。
-4. `$vibex-publish` 检查服务状态并展示完整发布表单，只有得到明确确认后才异步发布并跟踪进度。
+4. `$vibex-pricing` 查询或在单独明确确认后设置创作者定价，并验证保存值、线上生效值及是否需要重新发布。
+5. `$vibex-publish` 检查服务状态并展示完整发布表单，只有得到明确确认后才异步发布并跟踪进度。
 
 ## 内置 Skill
 
@@ -56,9 +58,10 @@ https://vibex.runninghub.cn/mcp/vibex
 | `$vibex-projects` | 查询、查看和创建本人项目 | `vibex.projects.read` 或 `vibex.projects.create` |
 | `$vibex-coding` | 读取并安全编辑稳定源码版本 | `vibex.projects.read` 或 `vibex.projects.edit` |
 | `$vibex-preview` | 准备并验证绑定版本的预览 | `vibex.projects.preview` |
+| `$vibex-pricing` | 查询、确认、设置并验证创作者定价 | `vibex.projects.pricing` |
 | `$vibex-publish` | 准备、确认并执行发布 | `vibex.projects.publish` |
 
-MCP 传输层会在首次连接时一次建立五项权限，确保所有工具都能稳定发现。任务状态查询接受任意项目权限，而所有状态变更工具仍会校验自己的操作权限和用户意图边界。
+MCP 传输层会在首次连接时一次建立六项权限，确保所有工具都能稳定发现。任务状态查询接受任意项目权限，而所有状态变更工具仍会校验自己的操作权限和用户意图边界。
 
 ## 安全模型
 
@@ -92,8 +95,8 @@ Browser 能力不随本插件打包，也不会使用用户日常浏览器配置
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex 插件清单
 ├── .mcp.json                    # 公开 OAuth MCP 连接
-├── contracts/public-tools.json # 17 个公开工具的契约
-├── skills/                      # 项目、编码、预览和发布 Skill
+├── contracts/public-tools.json # 20 个公开工具的契约
+├── skills/                      # 项目、编码、预览、定价和发布 Skill
 ├── scripts/                     # 公开包构建与校验脚本
 ├── tests/                       # 边界和契约测试
 └── assets/                      # 插件图标

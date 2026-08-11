@@ -31,13 +31,14 @@ For every VibeX MCP call, if the transport reports an expired token, `AUTH_REQUI
    - Whether remixing is allowed.
    - URL mode and slug when applicable.
    - Whether development backend data will be reset.
+   - Creator pricing: configured and effective percentages, synchronization state, whether this release activates pricing, and whether the pricing revision is still current.
 5. Ask the user to confirm or change every value. Never silently reuse defaults for a destructive or public-facing option.
 
 ## Prepare and explicit confirmation
 
 Call `vibex_prepare_publish` with all selected values and a fresh idempotency key. Show a human-readable confirmation card containing the returned cover, title, summary, revision, environment, visibility, gallery settings, category, remix setting, URL choice, and data-reset setting.
 
-Put `confirmation_digest` under a short “technical details” section; the digest is not the confirmation UI. Ask the user to explicitly confirm that exact card. Do not call `vibex_publish_project` in the same step unless the current user message already unambiguously confirms the complete displayed card.
+Put `confirmation_digest` under a short “technical details” section; the digest is not the confirmation UI. Ask the user to explicitly confirm that exact card. If pricing configuration changed after preparation, discard the intent and prepare again. Do not call `vibex_publish_project` in the same step unless the current user message already unambiguously confirms the complete displayed card.
 
 Any change to the project owner, source revision, cover, title, summary, target, visibility, gallery settings, categories, remix setting, URL/slug, domain, or reset setting invalidates the old intent. Prepare a new one.
 

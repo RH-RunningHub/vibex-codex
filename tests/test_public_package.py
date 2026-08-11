@@ -34,8 +34,8 @@ def test_plugin_listing_uses_vibex_codex_name_and_chinese_prompts() -> None:
     assert interface["displayName"] == "vibex-codex"
     assert interface["defaultPrompt"] == VALIDATOR.EXPECTED_DEFAULT_PROMPTS
     assert interface["defaultPrompt"][0] == (
-        "连接并查看我的 VibeX 项目；首次连接一次授权读取、创建、编辑、预览和发布五项权限；"
-        "令牌过期时自动刷新并重试，仍失败再提示我重新授权。发布必须另行明确确认。"
+        "连接 VibeX；首次授权读取、创建、编辑、预览、发布和定价六项权限；"
+        "令牌过期自动刷新。改价和发布均须分别明确确认。"
     )
 
 
@@ -72,12 +72,16 @@ def test_plugin_version_is_semver_safe_for_zero_padded_times() -> None:
 def test_contract_has_exact_tool_allowlist() -> None:
     contract = json.loads((ROOT / "contracts" / "public-tools.json").read_text())
     assert [tool["name"] for tool in contract["tools"]] == VALIDATOR.EXPECTED_TOOLS
-    assert len(contract["tools"]) == 17
+    assert len(contract["tools"]) == 20
     for tool in contract["tools"]:
         expected = [
             {"type": "oauth2", "scopes": VALIDATOR.EXPECTED_OAUTH_SCOPES}
         ]
         assert tool["securitySchemes"] == expected
+    by_name = {tool["name"]: tool for tool in contract["tools"]}
+    assert by_name["vibex_get_pricing"]["annotations"]["readOnlyHint"] is True
+    assert by_name["vibex_prepare_pricing"]["annotations"]["destructiveHint"] is False
+    assert by_name["vibex_set_pricing"]["annotations"]["destructiveHint"] is True
 
 
 def test_runtime_contract_verifier_detects_cross_repository_drift(

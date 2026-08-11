@@ -9,7 +9,7 @@ Use the VibeX MCP project tools to establish the exact owned project before edit
 
 ## Find or inspect a project
 
-1. Call `vibex_list_projects` and keep pagination bounded to what the request needs. If Codex reports that authentication is required, immediately use the Codex-managed OAuth flow and approve the complete five-scope VibeX connection requested by the MCP transport. Each tool remains constrained by its operation-level scope, and publish still requires a separate explicit confirmation. If the host cannot launch the authorization flow automatically, tell the user to open **插件 → vibex-codex → MCP服务器**, click the gear icon, and choose **发起授权**; resume this same request after authorization succeeds.
+1. Call `vibex_list_projects` and keep pagination bounded to what the request needs. If Codex reports that authentication is required, immediately use the Codex-managed OAuth flow and approve the complete six-scope VibeX connection requested by the MCP transport. Each tool remains constrained by its operation-level scope, and pricing changes and publishing still require separate explicit confirmations. If the host cannot launch the authorization flow automatically, tell the user to open **插件 → vibex-codex → MCP服务器**, click the gear icon, and choose **发起授权**; resume this same request after authorization succeeds.
 2. Match by `app_id` when supplied; otherwise match the user-visible name.
 3. If multiple projects match, show the safe distinguishing metadata and ask the user to choose. Never guess.
 4. Call `vibex_get_project` for the selected project and retain its current `source_revision`.

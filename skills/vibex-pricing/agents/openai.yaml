@@ -1,0 +1,13 @@
+interface:
+  display_name: "VibeX 定价"
+  short_description: "安全查询、升级、确认并验证 VibeX 创作者自定价"
+  default_prompt: "使用 $vibex-pricing 查看并设置我的 VibeX 项目创作者定价。"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "vibex-codex"
+      description: "VibeX 项目工具"
+      transport: "streamable_http"
+      url: "https://vibex.runninghub.cn/mcp/vibex"
+policy:
+  allow_implicit_invocation: true
