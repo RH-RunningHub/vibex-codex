@@ -1,5 +1,9 @@
 # Changelog
 
+## 26.8.11-t1945
+
+- Wait for the server to reap an expired edit lease before starting a replacement session, and report a stuck edit instead of repeatedly acquiring new locks.
+
 ## 26.8.11-t1915
 
 - Add publish readiness and complete publish-form tools, including cover preview, title, summary, gallery categories, remix, URL mode, and data-reset confirmation.
