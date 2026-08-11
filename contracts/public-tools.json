@@ -682,7 +682,7 @@
     {
       "name": "vibex_apply_patch",
       "title": "Apply confirmed VibeX patch",
-      "description": "Apply a bounded patch only to the isolated staging workspace and approved paths.",
+      "description": "Apply one standard unified diff (---/+++/@@ headers) to the isolated staging workspace. Include all approved changed files in one call; Codex apply_patch wrapper markers are not accepted.",
       "scope": "vibex.projects.edit",
       "inputSchema": {
         "properties": {

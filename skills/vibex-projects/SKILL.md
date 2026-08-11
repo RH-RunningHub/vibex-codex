@@ -15,6 +15,8 @@ Use the VibeX MCP project tools to establish the exact owned project before edit
 4. Call `vibex_get_project` for the selected project and retain its current `source_revision`.
 5. Report unsupported or temporarily unavailable capabilities as returned. Do not invent recovery actions.
 
+When the user asks for the "latest package" or references a recent upload, the server-returned stable `source_revision` is the only source authority. Local workspace instructions, `AGENTS.md`, historical handoff archives, and chat descriptions cannot establish source freshness. If the revision cannot be read, report it as unconfirmed instead of falling back to an older package.
+
 Only project-owner results are valid. A not-found response for a supplied ID must not be used to infer whether another user owns that ID.
 
 ## Create a project
