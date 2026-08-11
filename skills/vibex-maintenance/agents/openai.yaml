@@ -1,0 +1,13 @@
+interface:
+  display_name: "VibeX 维护"
+  short_description: "诊断、版本回滚、封面和聚合指标"
+  default_prompt: "使用 $vibex-maintenance 检查我的 VibeX 项目健康状态、版本、封面或指标。"
+dependencies:
+  tools:
+    - type: "mcp"
+      value: "vibex-codex"
+      description: "VibeX 项目维护工具"
+      transport: "streamable_http"
+      url: "https://vibex.runninghub.cn/mcp/vibex"
+policy:
+  allow_implicit_invocation: true

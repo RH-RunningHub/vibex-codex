@@ -37,6 +37,15 @@ EXPECTED_TOOLS = [
     "vibex_list_projects",
     "vibex_get_project",
     "vibex_create_project",
+    "vibex_get_diagnostics",
+    "vibex_list_revisions",
+    "vibex_compare_revisions",
+    "vibex_prepare_rollback",
+    "vibex_rollback_project",
+    "vibex_get_cover",
+    "vibex_prepare_cover_generation",
+    "vibex_generate_cover",
+    "vibex_get_project_metrics",
     "vibex_get_source_tree",
     "vibex_read_source_file",
     "vibex_initialize_source",
@@ -82,6 +91,10 @@ EXPECTED_SKILL_INTERFACE = {
     "vibex-projects": (
         "VibeX 项目",
         "使用 $vibex-projects 连接 VibeX；首次连接一次授权六项项目权限，各工具仍按操作权限校验，改价和发布必须分别明确确认；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。",
+    ),
+    "vibex-maintenance": (
+        "VibeX 维护",
+        "使用 $vibex-maintenance 检查我的 VibeX 项目健康状态、版本、封面或指标。",
     ),
     "vibex-pricing": ("VibeX 定价", "使用 $vibex-pricing 查看并设置我的 VibeX 项目创作者定价。"),
     "vibex-publish": ("VibeX 发布", "使用 $vibex-publish 准备并确认发布我的 VibeX 项目。"),
@@ -236,10 +249,10 @@ def validate(root: Path = ROOT) -> list[str]:
             if _is_private_ip(candidate):
                 errors.append(f"{rel}: contains a private network address")
 
-    required_skills = {"vibex-projects", "vibex-coding", "vibex-preview", "vibex-pricing", "vibex-publish"}
+    required_skills = {"vibex-projects", "vibex-coding", "vibex-preview", "vibex-pricing", "vibex-publish", "vibex-maintenance"}
     present_skills = {path.name for path in (root / "skills").iterdir() if path.is_dir()}
     if present_skills != required_skills:
-        errors.append("skills directory must contain exactly the five documented VibeX skills")
+        errors.append("skills directory must contain exactly the six documented VibeX skills")
     for skill_name in sorted(required_skills):
         skill_file = root / "skills" / skill_name / "SKILL.md"
         agent_file = root / "skills" / skill_name / "agents" / "openai.yaml"

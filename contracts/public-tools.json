@@ -1,6 +1,6 @@
 {
-  "contractVersion": "1.3.0",
-  "minimumPluginVersion": "1.3.0",
+  "contractVersion": "1.4.0",
+  "minimumPluginVersion": "1.4.0",
   "tools": [
     {
       "name": "vibex_list_projects",
@@ -217,6 +217,720 @@
       ],
       "annotations": {
         "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "vibex_get_diagnostics",
+      "title": "Diagnose a VibeX project",
+      "description": "Read a bounded, redacted health summary for one owned project. Internal hosts, paths, logs, and credentials are never returned.",
+      "scope": "vibex.projects.read",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "get_diagnosticsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "vibex_list_revisions",
+      "title": "List VibeX source revisions",
+      "description": "List bounded immutable source history and indicate which revisions can be safely rolled back.",
+      "scope": "vibex.projects.read",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "maximum": 100,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "list_revisionsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "vibex_compare_revisions",
+      "title": "Compare VibeX source revisions",
+      "description": "Compare immutable manifests without exposing file contents. Returns bounded added, removed, and changed paths.",
+      "scope": "vibex.projects.read",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "from_revision": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "From Revision",
+            "type": "string"
+          },
+          "to_revision": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "To Revision",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "from_revision",
+          "to_revision"
+        ],
+        "title": "compare_revisionsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "vibex_prepare_rollback",
+      "title": "Prepare VibeX rollback confirmation",
+      "description": "Prepare a single-use rollback summary bound to the exact current and target source revisions. This does not change source.",
+      "scope": "vibex.projects.edit",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "source_revision": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Source Revision",
+            "type": "string"
+          },
+          "target_revision": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Target Revision",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "maxLength": 200,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "source_revision",
+          "target_revision",
+          "idempotency_key"
+        ],
+        "title": "prepare_rollbackArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "vibex_rollback_project",
+      "title": "Rollback a VibeX project after confirmation",
+      "description": "Consume one prepared rollback intent only after explicit confirmation. Verifies the restored canonical source before reporting success.",
+      "scope": "vibex.projects.edit",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "action_intent_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "Action Intent Id",
+            "type": "string"
+          },
+          "confirmation_digest": {
+            "maxLength": 256,
+            "minLength": 16,
+            "title": "Confirmation Digest",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "maxLength": 200,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "action_intent_id",
+          "confirmation_digest",
+          "idempotency_key"
+        ],
+        "title": "rollback_projectArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "vibex_get_cover",
+      "title": "Get VibeX project cover",
+      "description": "Read the saved cover and the bounded status of any cover-generation job for one owned project.",
+      "scope": "vibex.projects.publish",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "get_coverArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "vibex_prepare_cover_generation",
+      "title": "Prepare VibeX cover generation",
+      "description": "Prepare a single-use confirmation card for generating one cover from the exact title and summary. This does not start generation.",
+      "scope": "vibex.projects.publish",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "source_revision": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Source Revision",
+            "type": "string"
+          },
+          "title": {
+            "maxLength": 64,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "maxLength": 200,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          },
+          "summary": {
+            "default": "",
+            "maxLength": 200,
+            "title": "Summary",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "source_revision",
+          "title",
+          "idempotency_key"
+        ],
+        "title": "prepare_cover_generationArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "vibex_generate_cover",
+      "title": "Generate a VibeX cover after confirmation",
+      "description": "Consume one prepared cover intent after explicit confirmation and start exactly one generation job. This never publishes the project.",
+      "scope": "vibex.projects.publish",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "action_intent_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "Action Intent Id",
+            "type": "string"
+          },
+          "confirmation_digest": {
+            "maxLength": 256,
+            "minLength": 16,
+            "title": "Confirmation Digest",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "maxLength": 200,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "action_intent_id",
+          "confirmation_digest",
+          "idempotency_key"
+        ],
+        "title": "generate_coverArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
+      "name": "vibex_get_project_metrics",
+      "title": "Get VibeX project metrics",
+      "description": "Read privacy-safe aggregate page views, visitors, and task outcomes for a bounded 1-90 day window. No visitor or task identifiers are returned.",
+      "scope": "vibex.projects.read",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "days": {
+            "default": 30,
+            "maximum": 90,
+            "minimum": 1,
+            "title": "Days",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "get_project_metricsArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": true,
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true

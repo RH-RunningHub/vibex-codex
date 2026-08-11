@@ -1,5 +1,12 @@
 # Changelog
 
+## 26.8.11-t2221
+
+- Add redacted project diagnostics and privacy-safe aggregate project metrics.
+- Add immutable revision history and manifest comparison, plus a single-use confirmed rollback flow.
+- Add cover status, preview, and separately confirmed cover generation without granting publication.
+- Expand the public MCP contract from 20 to 29 tools without adding OAuth scopes.
+
 ## 26.8.11-t2053
 
 - Add creator-pricing inspection, confirmation, application, and verification tools with a dedicated six-scope OAuth permission.

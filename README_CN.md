@@ -6,7 +6,7 @@
 [![English](https://img.shields.io/badge/Language-English-2563EB)](./README.md)
 [![简体中文](https://img.shields.io/badge/Language-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-EF4444)](./README_CN.md)
 
-`vibex-codex` 是用于创建、查看、编辑、预览、自定价和发布 VibeX Web 项目的开源 Codex 插件。它通过 Codex 管理的 OAuth 连接公开 VibeX MCP 服务，不需要 API Key 或本地凭据文件。
+`vibex-codex` 是用于创建、诊断、维护、编辑、预览、自定价和发布 VibeX Web 项目的开源 Codex 插件。它通过 Codex 管理的 OAuth 连接公开 VibeX MCP 服务，不需要 API Key 或本地凭据文件。
 
 ## 核心特点
 
@@ -18,6 +18,7 @@
 - 查询创作者定价的保存值和线上生效值；改价与发布分别确认，未发布的价格不会被误报为已生效。
 - OAuth 访问令牌过期时自动请求刷新；自动恢复失败时给出明确的重新授权入口，不再绕到浏览器上传。
 - 首次连接一次完成六项 OAuth 授权，每个工具仍按更窄的操作权限执行校验。
+- 提供脱敏健康诊断、不可变版本对比、确认式回滚、封面生成确认与隐私安全的聚合指标。
 
 ## 安装与连接
 
@@ -49,13 +50,15 @@ https://vibex.runninghub.cn/mcp/vibex
 2. `$vibex-coding` 固定源码版本、展示有限文件计划，在隔离工作区应用补丁并提交新稳定版本。
 3. `$vibex-preview` 为该精确版本准备短期预览并执行验证。
 4. `$vibex-pricing` 查询或在单独明确确认后设置创作者定价，并验证保存值、线上生效值及是否需要重新发布。
-5. `$vibex-publish` 检查服务状态并展示完整发布表单，只有得到明确确认后才异步发布并跟踪进度。
+5. `$vibex-maintenance` 按需检查健康、对比版本、确认回滚、生成封面或查看聚合指标。
+6. `$vibex-publish` 检查服务状态并展示完整发布表单，只有得到明确确认后才异步发布并跟踪进度。
 
 ## 内置 Skill
 
 | Skill | 用途 | 工具执行时校验的操作权限 |
 |---|---|---|
 | `$vibex-projects` | 查询、查看和创建本人项目 | `vibex.projects.read` 或 `vibex.projects.create` |
+| `$vibex-maintenance` | 诊断、版本对比/回滚、封面与聚合指标 | `vibex.projects.read`、`edit` 或 `publish` |
 | `$vibex-coding` | 读取并安全编辑稳定源码版本 | `vibex.projects.read` 或 `vibex.projects.edit` |
 | `$vibex-preview` | 准备并验证绑定版本的预览 | `vibex.projects.preview` |
 | `$vibex-pricing` | 查询、确认、设置并验证创作者定价 | `vibex.projects.pricing` |
@@ -95,8 +98,8 @@ Browser 能力不随本插件打包，也不会使用用户日常浏览器配置
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex 插件清单
 ├── .mcp.json                    # 公开 OAuth MCP 连接
-├── contracts/public-tools.json # 20 个公开工具的契约
-├── skills/                      # 项目、编码、预览、定价和发布 Skill
+├── contracts/public-tools.json # 29 个公开工具的契约
+├── skills/                      # 项目、维护、编码、预览、定价和发布 Skill
 ├── scripts/                     # 公开包构建与校验脚本
 ├── tests/                       # 边界和契约测试
 └── assets/                      # 插件图标

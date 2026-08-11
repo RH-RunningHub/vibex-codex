@@ -6,7 +6,7 @@
 [![English](https://img.shields.io/badge/Language-English-2563EB)](./README.md)
 [![简体中文](https://img.shields.io/badge/Language-%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-EF4444)](./README_CN.md)
 
-`vibex-codex` is the open-source Codex plugin for creating, inspecting, editing, previewing, pricing, and publishing VibeX web projects. It connects Codex to the public VibeX MCP endpoint through Codex-managed OAuth; no API key or local credential file is required.
+`vibex-codex` is the open-source Codex plugin for creating, diagnosing, maintaining, editing, previewing, pricing, and publishing VibeX web projects. It connects Codex to the public VibeX MCP endpoint through Codex-managed OAuth; no API key or local credential file is required.
 
 ## Highlights
 
@@ -17,6 +17,7 @@
 - Publish only after an explicit confirmation bound to the revision and target.
 - Inspect saved and effective creator pricing, with separate confirmations for pricing and publication.
 - Establish one complete six-scope OAuth connection while enforcing each tool's narrower operation scope.
+- Diagnose health, compare immutable revisions, confirm rollbacks and cover generation, and read privacy-safe aggregate metrics.
 
 ## Install and connect
 
@@ -48,13 +49,15 @@ The normal workflow is:
 2. `$vibex-coding` pins a source revision, displays a bounded file plan, applies patches in an isolated workspace, and commits a new stable revision.
 3. `$vibex-preview` prepares and verifies a short-lived preview for that exact revision.
 4. `$vibex-pricing` inspects or explicitly changes creator pricing, then verifies saved and effective state.
-5. `$vibex-publish` prepares a confirmation summary and publishes only after explicit approval.
+5. `$vibex-maintenance` handles health, history, confirmed rollback, cover generation, and aggregate metrics when requested.
+6. `$vibex-publish` prepares a confirmation summary and publishes only after explicit approval.
 
 ## Included skills
 
 | Skill | Purpose | Operation scope enforced by the tool |
 |---|---|---|
 | `$vibex-projects` | Find, inspect, and create owned projects | `vibex.projects.read` or `vibex.projects.create` |
+| `$vibex-maintenance` | Diagnose, compare/rollback, manage covers, and read aggregate metrics | `vibex.projects.read`, `edit`, or `publish` |
 | `$vibex-coding` | Read and safely edit a stable source revision | `vibex.projects.read` or `vibex.projects.edit` |
 | `$vibex-preview` | Prepare and verify a revision-pinned preview | `vibex.projects.preview` |
 | `$vibex-pricing` | Inspect, confirm, set, and verify creator pricing | `vibex.projects.pricing` |
@@ -94,8 +97,8 @@ The Browser capability is not bundled with this plugin and does not use the user
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex plugin manifest
 ├── .mcp.json                    # Public OAuth MCP connection
-├── contracts/public-tools.json # Public 20-tool contract
-├── skills/                      # Projects, coding, preview, pricing, and publish skills
+├── contracts/public-tools.json # Public 29-tool contract
+├── skills/                      # Projects, maintenance, coding, preview, pricing, and publish skills
 ├── scripts/                     # Public-package build and validation
 ├── tests/                       # Boundary and contract tests
 └── assets/                      # Plugin artwork
