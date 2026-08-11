@@ -46,6 +46,8 @@ EXPECTED_TOOLS = [
     "vibex_commit_edit",
     "vibex_cancel_edit",
     "vibex_prepare_preview",
+    "vibex_get_publish_form",
+    "vibex_get_publish_readiness",
     "vibex_prepare_publish",
     "vibex_publish_project",
     "vibex_get_operation_status",
@@ -66,7 +68,7 @@ VERSION_PATTERN = re.compile(
     r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
 )
 EXPECTED_DEFAULT_PROMPTS = [
-    "连接并查看我的 VibeX 项目；首次连接一次授权读取、创建、编辑、预览和发布五项权限；各工具仍按操作权限校验，发布必须另行明确确认。无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。",
+    "连接并查看我的 VibeX 项目；首次连接一次授权读取、创建、编辑、预览和发布五项权限；令牌过期时自动刷新并重试，仍失败再提示我重新授权。发布必须另行明确确认。",
     "使用 VibeX 编码安全地完成这项修改，然后准备预览。",
     "使用 VibeX 发布准备发布确认；得到我的明确确认后再发布。",
 ]
@@ -188,7 +190,7 @@ def validate(root: Path = ROOT) -> list[str]:
         contract = {}
     names = [tool.get("name") for tool in contract.get("tools", [])]
     if names != EXPECTED_TOOLS:
-        errors.append("public contract must contain the exact ordered 15-tool allowlist")
+        errors.append("public contract must contain the exact ordered 17-tool allowlist")
     else:
         for tool in contract["tools"]:
             expected_security_schemes = _expected_security_schemes(tool.get("scope"))

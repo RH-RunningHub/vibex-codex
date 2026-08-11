@@ -35,8 +35,7 @@ def test_plugin_listing_uses_vibex_codex_name_and_chinese_prompts() -> None:
     assert interface["defaultPrompt"] == VALIDATOR.EXPECTED_DEFAULT_PROMPTS
     assert interface["defaultPrompt"][0] == (
         "连接并查看我的 VibeX 项目；首次连接一次授权读取、创建、编辑、预览和发布五项权限；"
-        "各工具仍按操作权限校验，发布必须另行明确确认。无法自动授权时，请到插件的 MCP服务"
-        "器齿轮中选择“发起授权”。"
+        "令牌过期时自动刷新并重试，仍失败再提示我重新授权。发布必须另行明确确认。"
     )
 
 
@@ -73,7 +72,7 @@ def test_plugin_version_is_semver_safe_for_zero_padded_times() -> None:
 def test_contract_has_exact_tool_allowlist() -> None:
     contract = json.loads((ROOT / "contracts" / "public-tools.json").read_text())
     assert [tool["name"] for tool in contract["tools"]] == VALIDATOR.EXPECTED_TOOLS
-    assert len(contract["tools"]) == 15
+    assert len(contract["tools"]) == 17
     for tool in contract["tools"]:
         expected = [
             {"type": "oauth2", "scopes": VALIDATOR.EXPECTED_OAUTH_SCOPES}

@@ -91,7 +91,7 @@ The Browser capability is not bundled with this plugin and does not use the user
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex plugin manifest
 ├── .mcp.json                    # Public OAuth MCP connection
-├── contracts/public-tools.json # Public 15-tool contract
+├── contracts/public-tools.json # Public 17-tool contract
 ├── skills/                      # Projects, coding, preview, and publish skills
 ├── scripts/                     # Public-package build and validation
 ├── tests/                       # Boundary and contract tests

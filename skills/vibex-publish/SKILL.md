@@ -5,24 +5,56 @@ description: Prepare, confirm, execute, and verify publication of an owned VibeX
 
 # VibeX Publish
 
-Publishing is a separate, explicit two-step confirmation flow.
+Publishing is a separate, explicit confirmation flow. Never use a browser upload path as a fallback for an MCP failure.
 
-## Prepare
+## Authentication recovery
 
-1. Confirm the user explicitly requested publication. Phrases such as “改完了”, “预览通过”, or “继续” are not publication authorization.
-2. Call `vibex_get_project` and identify the exact stable revision.
-3. Call `vibex_prepare_publish` with that revision, target, visibility, and a fresh idempotency key. If the service reports an authentication or scope error, renew the complete VibeX OAuth connection, then retry the same request with the same idempotency key.
-4. Show the returned project, revision, target, visibility, address options, and confirmation digest in a concise summary.
-5. Ask the user to explicitly confirm that exact summary. Do not call the publish tool in the same step unless the user's current message already unambiguously confirms the displayed summary.
+For every VibeX MCP call, if the transport reports an expired token, `AUTH_REQUIRED`, `invalid_token`, or an OAuth refresh failure:
 
-## Publish and verify
+1. Retry the same tool call once with exactly the same arguments and idempotency key. This retry asks the MCP host to refresh or reopen the VibeX OAuth connection automatically.
+2. If authorization still fails, stop. Ask the user to reconnect **vibex-codex** using **MCP server settings → Initiate authorization**, then resume the same step after authorization. Do not switch to Browser, local files, or another upload channel.
 
-After explicit confirmation, call `vibex_publish_project` with the single-use intent ID, exact confirmation digest, and a fresh idempotency key. Poll `vibex_get_operation_status` until terminal.
+## Readiness and form
 
-When successful, report the public result and verify the returned address when the client can safely do so. If verification fails or state is uncertain, query operation status and report the recovery guidance; do not create a second release.
+1. Confirm that the user explicitly requested publication. “改完了”, “预览通过”, and “继续” are not publication authorization.
+2. Call `vibex_get_project` and pin its exact stable `source_revision`.
+3. Call `vibex_get_publish_readiness` for that revision before presenting publish choices.
+   - If `ready` is false, show the returned blocker or server-unavailable message and stop.
+   - Do not prepare or execute a publish while readiness is blocked or unknown.
+4. Call `vibex_get_publish_form` and display the current values and available choices:
+   - Render `cover.url` as a Markdown image when present. State clearly when no cover exists.
+   - Title and summary.
+   - Test or production environment.
+   - Private or public visibility.
+   - Whether to submit to the Inspiration Gallery. This is separate from public visibility.
+   - Gallery category, subcategory, and industry when gallery submission is enabled.
+   - Whether remixing is allowed.
+   - URL mode and slug when applicable.
+   - Whether development backend data will be reset.
+5. Ask the user to confirm or change every value. Never silently reuse defaults for a destructive or public-facing option.
 
-## Invalidation rules
+## Prepare and explicit confirmation
 
-If project owner, source revision, target, visibility, slug, domain, or options change, discard the old confirmation and prepare a new one. An expired or consumed intent cannot be reused.
+Call `vibex_prepare_publish` with all selected values and a fresh idempotency key. Show a human-readable confirmation card containing the returned cover, title, summary, revision, environment, visibility, gallery settings, category, remix setting, URL choice, and data-reset setting.
+
+Put `confirmation_digest` under a short “technical details” section; the digest is not the confirmation UI. Ask the user to explicitly confirm that exact card. Do not call `vibex_publish_project` in the same step unless the current user message already unambiguously confirms the complete displayed card.
+
+Any change to the project owner, source revision, cover, title, summary, target, visibility, gallery settings, categories, remix setting, URL/slug, domain, or reset setting invalidates the old intent. Prepare a new one.
+
+## Publish and poll
+
+After explicit confirmation, call `vibex_publish_project` once with the single-use intent ID, exact digest, and a fresh idempotency key. A normal response is `QUEUED` or `RUNNING`; do not wait on the original publish request and do not submit a duplicate publish.
+
+Poll `vibex_get_operation_status` until a terminal state:
+
+- Poll after 2, 4, 8, then 10 seconds, capped at 10 seconds.
+- Parse only structured `state`, `phase`, `error_code`, `retryable`, and `next_action` fields.
+- Reset the consecutive transport-failure count after any successful response.
+- After five consecutive transport failures, stop polling and report that the result is unknown. Keep the operation ID for later recovery; never create another release automatically.
+- `FAILED`, `CANCELED`, and `TIMED_OUT` are terminal. Show the server error and guidance; do not automatically retry a business failure.
+- `UNKNOWN` means recovery is required. Report it and do not republish.
+- For a long-running operation, give a concise phase update at least every 30 seconds.
+
+On `SUCCEEDED`, show the publish URL and verify it when the client can safely do so. A verification failure does not authorize a second publish; query the same operation instead.
 
 Never publish from `$vibex-coding` or `$vibex-preview`, and never treat a successful preview as confirmation.

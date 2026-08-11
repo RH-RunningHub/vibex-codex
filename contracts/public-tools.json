@@ -1,6 +1,6 @@
 {
-  "contractVersion": "1.1.0",
-  "minimumPluginVersion": "1.1.0",
+  "contractVersion": "1.2.0",
+  "minimumPluginVersion": "1.2.0",
   "tools": [
     {
       "name": "vibex_list_projects",
@@ -1096,6 +1096,143 @@
       }
     },
     {
+      "name": "vibex_get_publish_form",
+      "title": "Get VibeX publish form",
+      "description": "Read the current cover, title, summary, defaults, and allowed publish options. Show these values and collect explicit choices before preparing a publish.",
+      "scope": "vibex.projects.publish",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "get_publish_formArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "vibex_get_publish_readiness",
+      "title": "Check VibeX publish readiness",
+      "description": "Check source and publish-service availability before asking for confirmation. A blocked or unavailable result must be shown to the user and publishing must stop.",
+      "scope": "vibex.projects.publish",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "source_revision": {
+            "maxLength": 256,
+            "minLength": 1,
+            "title": "Source Revision",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "source_revision"
+        ],
+        "title": "get_publish_readinessArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      }
+    },
+    {
       "name": "vibex_prepare_publish",
       "title": "Prepare VibeX publish confirmation",
       "description": "Prepare a single-use summary and digest. This does not publish.",
@@ -1136,6 +1273,106 @@
               "public"
             ],
             "title": "Visibility",
+            "type": "string"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Title"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Summary"
+          },
+          "cover_mode": {
+            "default": "existing",
+            "enum": [
+              "existing",
+              "homepage_screenshot"
+            ],
+            "title": "Cover Mode",
+            "type": "string"
+          },
+          "submit_to_gallery": {
+            "default": false,
+            "title": "Submit To Gallery",
+            "type": "boolean"
+          },
+          "gallery_category": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Gallery Category"
+          },
+          "gallery_subcategory": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Gallery Subcategory"
+          },
+          "gallery_industry": {
+            "anyOf": [
+              {
+                "maxLength": 80,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Gallery Industry"
+          },
+          "allow_remix": {
+            "default": false,
+            "title": "Allow Remix",
+            "type": "boolean"
+          },
+          "reset_dev_backend_data": {
+            "default": false,
+            "title": "Reset Dev Backend Data",
+            "type": "boolean"
+          },
+          "publish_url_mode": {
+            "default": "default",
+            "enum": [
+              "default",
+              "legacy",
+              "custom"
+            ],
+            "title": "Publish Url Mode",
             "type": "string"
           },
           "slug": {

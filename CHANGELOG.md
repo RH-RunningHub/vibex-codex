@@ -1,5 +1,11 @@
 # Changelog
 
+## 26.8.11-t1915
+
+- Add publish readiness and complete publish-form tools, including cover preview, title, summary, gallery categories, remix, URL mode, and data-reset confirmation.
+- Make project publishing asynchronous and require clients to poll structured operation phases instead of holding a long request open.
+- Recover automatically from expired OAuth access tokens through safe refresh retries, with explicit reauthorization guidance only when recovery fails.
+
 ## 26.8.10-t1958
 
 - Align every public tool's OAuth connection metadata with the MCP transport's five-scope handshake while retaining operation-level scope checks.
