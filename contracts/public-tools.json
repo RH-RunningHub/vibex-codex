@@ -1,6 +1,6 @@
 {
-  "contractVersion": "1.4.0",
-  "minimumPluginVersion": "1.4.0",
+  "contractVersion": "1.5.0",
+  "minimumPluginVersion": "1.5.0",
   "tools": [
     {
       "name": "vibex_list_projects",
@@ -67,7 +67,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -133,7 +134,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -168,6 +170,22 @@
             "default": "web",
             "title": "App Type",
             "type": "string"
+          },
+          "enabled_capabilities": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Enabled Capabilities"
           }
         },
         "required": [
@@ -211,7 +229,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -220,6 +239,317 @@
         "destructiveHint": false,
         "idempotentHint": true,
         "openWorldHint": true
+      }
+    },
+    {
+      "name": "vibex_list_capabilities",
+      "title": "List VibeX capabilities",
+      "description": "List the canonical CC capability catalog, including built-in and selectable capabilities.",
+      "scope": "vibex.projects.capabilities",
+      "inputSchema": {
+        "properties": {
+          "app_type": {
+            "default": "web",
+            "enum": [
+              "web",
+              "mini_program"
+            ],
+            "title": "App Type",
+            "type": "string"
+          }
+        },
+        "title": "list_capabilitiesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "vibex_get_project_capabilities",
+      "title": "Get project capabilities",
+      "description": "Read one owned project's versioned capability configuration and apply status.",
+      "scope": "vibex.projects.capabilities",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "get_project_capabilitiesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "vibex_prepare_capability_change",
+      "title": "Prepare capability change",
+      "description": "Prepare a single-use capability change summary. This does not modify source or the published snapshot.",
+      "scope": "vibex.projects.capabilities",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "expected_config_revision": {
+            "minimum": 1,
+            "title": "Expected Config Revision",
+            "type": "integer"
+          },
+          "enabled_capabilities": {
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 20,
+            "title": "Enabled Capabilities",
+            "type": "array"
+          },
+          "idempotency_key": {
+            "maxLength": 200,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "expected_config_revision",
+          "enabled_capabilities",
+          "idempotency_key"
+        ],
+        "title": "prepare_capability_changeArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
+      }
+    },
+    {
+      "name": "vibex_set_project_capabilities",
+      "title": "Set project capabilities",
+      "description": "Apply one prepared capability change only after the user explicitly confirms its exact digest.",
+      "scope": "vibex.projects.capabilities",
+      "inputSchema": {
+        "properties": {
+          "app_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "App Id",
+            "type": "string"
+          },
+          "capability_intent_id": {
+            "maxLength": 160,
+            "minLength": 1,
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+            "title": "Capability Intent Id",
+            "type": "string"
+          },
+          "confirmation_digest": {
+            "maxLength": 256,
+            "minLength": 16,
+            "title": "Confirmation Digest",
+            "type": "string"
+          },
+          "idempotency_key": {
+            "maxLength": 200,
+            "minLength": 8,
+            "title": "Idempotency Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "capability_intent_id",
+          "confirmation_digest",
+          "idempotency_key"
+        ],
+        "title": "set_project_capabilitiesArguments",
+        "type": "object"
+      },
+      "outputSchema": {
+        "additionalProperties": false,
+        "description": "Stable response envelope shared by every public tool.",
+        "properties": {
+          "ok": {
+            "default": true,
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "request_id": {
+            "title": "Request Id",
+            "type": "string"
+          },
+          "data": {
+            "additionalProperties": true,
+            "title": "Data",
+            "type": "object"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "title": "PublicResponse",
+        "type": "object"
+      },
+      "securitySchemes": [
+        {
+          "type": "oauth2",
+          "scopes": [
+            "vibex.projects.read",
+            "vibex.projects.preview",
+            "vibex.projects.create",
+            "vibex.projects.edit",
+            "vibex.projects.publish",
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
+          ]
+        }
+      ],
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": false
       }
     },
     {
@@ -277,7 +607,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -350,7 +681,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -430,7 +762,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -517,7 +850,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -605,7 +939,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -671,7 +1006,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -764,7 +1100,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -852,7 +1189,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -925,7 +1263,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1024,7 +1363,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1130,7 +1470,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1196,7 +1537,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1295,7 +1637,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1390,7 +1733,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1525,7 +1869,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1634,7 +1979,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1715,7 +2061,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1810,7 +2157,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1883,7 +2231,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -1970,7 +2319,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -2058,7 +2408,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -2124,7 +2475,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -2197,7 +2549,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -2422,7 +2775,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -2510,7 +2864,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],
@@ -2576,7 +2931,8 @@
             "vibex.projects.create",
             "vibex.projects.edit",
             "vibex.projects.publish",
-            "vibex.projects.pricing"
+            "vibex.projects.pricing",
+            "vibex.projects.capabilities"
           ]
         }
       ],

@@ -1,6 +1,6 @@
 {
   "name": "vibex-codex",
-  "version": "26.8.11-t2221",
+  "version": "26.8.12-t2223",
   "description": "通过 Codex 安全地创建、诊断、维护、编辑、预览、定价和发布 VibeX 项目。",
   "author": {
     "name": "RunningHub"
@@ -25,7 +25,7 @@
       "Write"
     ],
     "defaultPrompt": [
-      "连接 VibeX；首次授权读取、创建、编辑、预览、发布和定价六项权限；令牌过期自动刷新。改价和发布均须分别明确确认。",
+      "连接 VibeX；首次授权读取、创建、编辑、预览、发布、定价和能力设置七项权限；敏感变更均须明确确认。",
       "\u4f7f\u7528 VibeX \u7f16\u7801\u5b89\u5168\u5730\u5b8c\u6210\u8fd9\u9879\u4fee\u6539\uff0c\u7136\u540e\u51c6\u5907\u9884\u89c8\u3002",
       "\u4f7f\u7528 VibeX \u53d1\u5e03\u51c6\u5907\u53d1\u5e03\u786e\u8ba4\uff1b\u5f97\u5230\u6211\u7684\u660e\u786e\u786e\u8ba4\u540e\u518d\u53d1\u5e03\u3002"
     ],

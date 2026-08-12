@@ -9,7 +9,7 @@ Use the VibeX MCP project tools to establish the exact owned project before edit
 
 ## Find or inspect a project
 
-1. Call `vibex_list_projects` and keep pagination bounded to what the request needs. If Codex reports that authentication is required, immediately use the Codex-managed OAuth flow and approve the complete six-scope VibeX connection requested by the MCP transport. Each tool remains constrained by its operation-level scope, and pricing changes and publishing still require separate explicit confirmations. If the host cannot launch the authorization flow automatically, tell the user to open **插件 → vibex-codex → MCP服务器**, click the gear icon, and choose **发起授权**; resume this same request after authorization succeeds.
+1. Call `vibex_list_projects` and keep pagination bounded to what the request needs. If Codex reports that authentication is required, immediately use the Codex-managed OAuth flow and approve the complete seven-scope VibeX connection requested by the MCP transport. Each tool remains constrained by its operation-level scope, and capability, pricing, and publishing changes still require separate explicit confirmations. If the host cannot launch the authorization flow automatically, tell the user to open **插件 → vibex-codex → MCP服务器**, click the gear icon, and choose **发起授权**; resume this same request after authorization succeeds.
 2. Match by `app_id` when supplied; otherwise match the user-visible name.
 3. If multiple projects match, show the safe distinguishing metadata and ask the user to choose. Never guess.
 4. Call `vibex_get_project` for the selected project and retain its current `source_revision`.
@@ -23,7 +23,7 @@ Only project-owner results are valid. A not-found response for a supplied ID mus
 
 Create only after the user clearly asks for a new project and the project name is known.
 
-1. Call `vibex_create_project` with `app_type: web` and a fresh idempotency key. If the service reports an authentication or scope error, renew the complete VibeX OAuth connection, then retry the same request with the same idempotency key.
+1. Call `vibex_create_project` with `app_type: web`, a fresh idempotency key, and `enabled_capabilities: []` unless the user explicitly asked to enable Agent. If the service reports an authentication or scope error, renew the complete VibeX OAuth connection, then retry the same request with the same idempotency key.
 2. Poll the returned `operation_id` with `vibex_get_operation_status`; never repeat create to speed it up.
 3. On success, call `vibex_get_project` and retain the initial stable revision.
 4. Hand off to `$vibex-preview` when the user wants to inspect the initial project, or `$vibex-coding` when they requested implementation work.

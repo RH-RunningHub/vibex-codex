@@ -16,14 +16,15 @@
 - Preview the exact revision being reviewed with a short-lived launch URL.
 - Publish only after an explicit confirmation bound to the revision and target.
 - Inspect saved and effective creator pricing, with separate confirmations for pricing and publication.
-- Establish one complete six-scope OAuth connection while enforcing each tool's narrower operation scope.
+- Establish one complete seven-scope OAuth connection while enforcing each tool's narrower operation scope.
+- Read the CC-sourced capability catalog; standard capabilities are built in, while Agent defaults off and changes only after exact confirmation.
 - Diagnose health, compare immutable revisions, confirm rollbacks and cover generation, and read privacy-safe aggregate metrics.
 
 ## Install and connect
 
 Install the plugin through the plugin flow provided by your Codex client, using this repository as the source. The checked-in manifest is [`.codex-plugin/plugin.json`](./.codex-plugin/plugin.json), and the MCP connection is declared in [`.mcp.json`](./.mcp.json).
 
-When Codex first connects, authorize the six project scopes requested by the MCP transport. The service still checks the narrower operation scope for every tool, and the connection grant never replaces an explicit request to create, edit, preview, price, or publish. If the client cannot open the authorization flow automatically, open **Plugins → vibex-codex → MCP server → Settings → Start authorization**.
+When Codex first connects, authorize the seven project scopes requested by the MCP transport. The service still checks the narrower operation scope for every tool, and the connection grant never replaces an explicit request to create, edit, preview, change capabilities, price, or publish. If the client cannot open the authorization flow automatically, open **Plugins → vibex-codex → MCP server → Settings → Start authorization**.
 
 The production endpoint is:
 
@@ -46,24 +47,26 @@ Use VibeX Publish to prepare a release for my confirmation.
 The normal workflow is:
 
 1. `$vibex-projects` resolves or explicitly creates one owned project.
-2. `$vibex-coding` pins a source revision, displays a bounded file plan, applies patches in an isolated workspace, and commits a new stable revision.
-3. `$vibex-preview` prepares and verifies a short-lived preview for that exact revision.
-4. `$vibex-pricing` inspects or explicitly changes creator pricing, then verifies saved and effective state.
-5. `$vibex-maintenance` handles health, history, confirmed rollback, cover generation, and aggregate metrics when requested.
-6. `$vibex-publish` prepares a confirmation summary and publishes only after explicit approval.
+2. `$vibex-capabilities` inspects built-ins and separately confirms optional Agent changes.
+3. `$vibex-coding` pins a source revision, displays a bounded file plan, applies patches in an isolated workspace, and commits a new stable revision.
+4. `$vibex-preview` prepares and verifies a short-lived preview for that exact revision.
+5. `$vibex-pricing` inspects or explicitly changes creator pricing, then verifies saved and effective state.
+6. `$vibex-maintenance` handles health, history, confirmed rollback, cover generation, and aggregate metrics when requested.
+7. `$vibex-publish` prepares a confirmation summary and publishes only after explicit approval.
 
 ## Included skills
 
 | Skill | Purpose | Operation scope enforced by the tool |
 |---|---|---|
 | `$vibex-projects` | Find, inspect, and create owned projects | `vibex.projects.read` or `vibex.projects.create` |
+| `$vibex-capabilities` | Inspect built-ins and confirm optional Agent changes | `vibex.projects.capabilities` |
 | `$vibex-maintenance` | Diagnose, compare/rollback, manage covers, and read aggregate metrics | `vibex.projects.read`, `edit`, or `publish` |
 | `$vibex-coding` | Read and safely edit a stable source revision | `vibex.projects.read` or `vibex.projects.edit` |
 | `$vibex-preview` | Prepare and verify a revision-pinned preview | `vibex.projects.preview` |
 | `$vibex-pricing` | Inspect, confirm, set, and verify creator pricing | `vibex.projects.pricing` |
 | `$vibex-publish` | Prepare, confirm, and execute publication | `vibex.projects.publish` |
 
-The MCP transport establishes all six scopes in one connection so every tool can be discovered reliably. Operation-status polling accepts any project scope, while each state-changing tool still enforces its own scope and user-intent boundary.
+The MCP transport establishes all seven scopes in one connection so every tool can be discovered reliably. Operation-status polling accepts any project scope, while each state-changing tool still enforces its own scope and user-intent boundary.
 
 ## Security model
 
@@ -97,7 +100,7 @@ The Browser capability is not bundled with this plugin and does not use the user
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex plugin manifest
 ├── .mcp.json                    # Public OAuth MCP connection
-├── contracts/public-tools.json # Public 29-tool contract
+├── contracts/public-tools.json # Public 33-tool contract
 ├── skills/                      # Projects, maintenance, coding, preview, pricing, and publish skills
 ├── scripts/                     # Public-package build and validation
 ├── tests/                       # Boundary and contract tests

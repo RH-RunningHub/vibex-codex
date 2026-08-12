@@ -1,5 +1,11 @@
 # Changelog
 
+## 26.8.12-t2223
+
+- Add the canonical CC capability catalog and versioned project capability inspection.
+- Add confirmation-gated Agent enable/disable tools without changing source or the active published snapshot.
+- Expand the public MCP contract from 29 to 33 tools and add the dedicated capability OAuth scope.
+
 ## 26.8.11-t2221
 
 - Add redacted project diagnostics and privacy-safe aggregate project metrics.

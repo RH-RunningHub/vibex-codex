@@ -35,4 +35,4 @@ If the source revision changes, the intent expires, the result is uncertain, or 
 
 Cover confirmation is not publish confirmation. Never call `vibex_publish_project` from this skill.
 
-On authentication or scope errors, use the Codex-managed OAuth renewal flow and resume the same bounded request. The existing six scopes cover these tools; do not request an extra scope.
+On authentication or scope errors, use the Codex-managed OAuth renewal flow and resume the same bounded request. The existing seven scopes cover these tools; do not request an extra scope.

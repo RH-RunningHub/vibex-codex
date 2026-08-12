@@ -34,8 +34,8 @@ def test_plugin_listing_uses_vibex_codex_name_and_chinese_prompts() -> None:
     assert interface["displayName"] == "vibex-codex"
     assert interface["defaultPrompt"] == VALIDATOR.EXPECTED_DEFAULT_PROMPTS
     assert interface["defaultPrompt"][0] == (
-        "连接 VibeX；首次授权读取、创建、编辑、预览、发布和定价六项权限；"
-        "令牌过期自动刷新。改价和发布均须分别明确确认。"
+        "连接 VibeX；首次授权读取、创建、编辑、预览、发布、定价和能力设置七项权限；"
+        "敏感变更均须明确确认。"
     )
 
 
@@ -72,7 +72,7 @@ def test_plugin_version_is_semver_safe_for_zero_padded_times() -> None:
 def test_contract_has_exact_tool_allowlist() -> None:
     contract = json.loads((ROOT / "contracts" / "public-tools.json").read_text())
     assert [tool["name"] for tool in contract["tools"]] == VALIDATOR.EXPECTED_TOOLS
-    assert len(contract["tools"]) == 29
+    assert len(contract["tools"]) == 33
     for tool in contract["tools"]:
         expected = [
             {"type": "oauth2", "scopes": VALIDATOR.EXPECTED_OAUTH_SCOPES}

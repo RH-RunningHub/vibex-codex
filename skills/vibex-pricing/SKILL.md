@@ -14,7 +14,7 @@ publication.
 For every VibeX MCP call, retry the same call once with identical arguments and
 idempotency key after `AUTH_REQUIRED`, `invalid_token`, an expired token, or an
 OAuth refresh failure. This asks the host to refresh or reopen the complete
-six-scope VibeX connection. If it still fails, stop and ask the user to open
+seven-scope VibeX connection. If it still fails, stop and ask the user to open
 **Plugins → vibex-codex → MCP server → Settings → Initiate authorization**.
 Never switch to browser upload, local files, or another channel.
 

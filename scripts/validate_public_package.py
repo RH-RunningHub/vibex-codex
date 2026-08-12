@@ -37,6 +37,10 @@ EXPECTED_TOOLS = [
     "vibex_list_projects",
     "vibex_get_project",
     "vibex_create_project",
+    "vibex_list_capabilities",
+    "vibex_get_project_capabilities",
+    "vibex_prepare_capability_change",
+    "vibex_set_project_capabilities",
     "vibex_get_diagnostics",
     "vibex_list_revisions",
     "vibex_compare_revisions",
@@ -71,6 +75,7 @@ EXPECTED_OAUTH_SCOPES = [
     "vibex.projects.edit",
     "vibex.projects.publish",
     "vibex.projects.pricing",
+    "vibex.projects.capabilities",
 ]
 EXPECTED_DISPLAY_NAME = "vibex-codex"
 VERSION_PATTERN = re.compile(
@@ -81,16 +86,17 @@ VERSION_PATTERN = re.compile(
     r"(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$"
 )
 EXPECTED_DEFAULT_PROMPTS = [
-    "连接 VibeX；首次授权读取、创建、编辑、预览、发布和定价六项权限；令牌过期自动刷新。改价和发布均须分别明确确认。",
+    "连接 VibeX；首次授权读取、创建、编辑、预览、发布、定价和能力设置七项权限；敏感变更均须明确确认。",
     "使用 VibeX 编码安全地完成这项修改，然后准备预览。",
     "使用 VibeX 发布准备发布确认；得到我的明确确认后再发布。",
 ]
 EXPECTED_SKILL_INTERFACE = {
+    "vibex-capabilities": ("VibeX 能力", "使用 $vibex-capabilities 查看并设置我的 VibeX 项目能力。"),
     "vibex-coding": ("VibeX 编码", "使用 $vibex-coding 在我的 VibeX 项目中完成这项修改。"),
     "vibex-preview": ("VibeX 预览", "使用 $vibex-preview 验证我的最新 VibeX 项目版本。"),
     "vibex-projects": (
         "VibeX 项目",
-        "使用 $vibex-projects 连接 VibeX；首次连接一次授权六项项目权限，各工具仍按操作权限校验，改价和发布必须分别明确确认；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。",
+        "使用 $vibex-projects 连接 VibeX；首次连接一次授权七项项目权限，各工具仍按操作权限校验，敏感变更必须分别明确确认；无法自动授权时，请到插件的 MCP服务器齿轮中选择“发起授权”。",
     ),
     "vibex-maintenance": (
         "VibeX 维护",
@@ -208,7 +214,7 @@ def validate(root: Path = ROOT) -> list[str]:
         contract = {}
     names = [tool.get("name") for tool in contract.get("tools", [])]
     if names != EXPECTED_TOOLS:
-        errors.append("public contract must contain the exact ordered 20-tool allowlist")
+        errors.append("public contract must contain the exact ordered 33-tool allowlist")
     else:
         for tool in contract["tools"]:
             expected_security_schemes = _expected_security_schemes(tool.get("scope"))
@@ -249,10 +255,10 @@ def validate(root: Path = ROOT) -> list[str]:
             if _is_private_ip(candidate):
                 errors.append(f"{rel}: contains a private network address")
 
-    required_skills = {"vibex-projects", "vibex-coding", "vibex-preview", "vibex-pricing", "vibex-publish", "vibex-maintenance"}
+    required_skills = {"vibex-projects", "vibex-coding", "vibex-preview", "vibex-pricing", "vibex-publish", "vibex-maintenance", "vibex-capabilities"}
     present_skills = {path.name for path in (root / "skills").iterdir() if path.is_dir()}
     if present_skills != required_skills:
-        errors.append("skills directory must contain exactly the six documented VibeX skills")
+        errors.append("skills directory must contain exactly the seven documented VibeX skills")
     for skill_name in sorted(required_skills):
         skill_file = root / "skills" / skill_name / "SKILL.md"
         agent_file = root / "skills" / skill_name / "agents" / "openai.yaml"
