@@ -20,6 +20,9 @@
 - Establish one complete seven-scope OAuth connection while enforcing each tool's narrower operation scope.
 - Read the CC-sourced capability catalog; standard capabilities are built in, while Agent defaults off and changes only after exact confirmation.
 - Diagnose health, compare immutable revisions, confirm rollbacks and cover generation, and read privacy-safe aggregate metrics.
+- Upload owner-bound PNG/JPEG/WebP images; the service converts them to WebP, stores them on the project CDN, and returns a public HTTPS URL for use in source. This does not set the cover or publish.
+- Upload owner-bound MP4/MOV/WebM clips; the service transcodes them to compact H.264 MP4, stores them on the project CDN, and returns a public HTTPS URL. This does not set the cover or publish.
+- Replace a saved cover from a user-provided image by center-cropping it to 16:9 at 1200x675 WebP, storing it on the project CDN, and returning a public HTTPS URL. This does not publish.
 
 ## Install and connect
 
@@ -52,7 +55,7 @@ The normal workflow is:
 3. `$vibex-coding` pins a source revision, displays a bounded file plan, applies patches in an isolated workspace, and commits a new stable revision.
 4. `$vibex-preview` prepares and verifies a short-lived preview for that exact revision.
 5. `$vibex-pricing` inspects or explicitly changes creator pricing, then verifies saved and effective state.
-6. `$vibex-maintenance` handles health, history, confirmed rollback, cover generation, and aggregate metrics when requested.
+6. `$vibex-maintenance` handles health, history, confirmed rollback, cover generation or 16:9 cover upload, and aggregate metrics when requested.
 7. `$vibex-publish` prepares a confirmation summary and publishes only after explicit approval.
 
 ## Included skills
@@ -62,7 +65,7 @@ The normal workflow is:
 | `$vibex-projects` | Find, inspect, and create owned projects | `vibex.projects.read` or `vibex.projects.create` |
 | `$vibex-capabilities` | Inspect built-ins and confirm optional Agent changes | `vibex.projects.capabilities` |
 | `$vibex-maintenance` | Diagnose, compare/rollback, manage covers, and read aggregate metrics | `vibex.projects.read`, `edit`, or `publish` |
-| `$vibex-coding` | Read and safely edit a stable source revision | `vibex.projects.read` or `vibex.projects.edit` |
+| `$vibex-coding` | Read and safely edit a stable source revision, uploading images or short videos to the project CDN when needed | `vibex.projects.read` or `vibex.projects.edit` |
 | `$vibex-preview` | Prepare and verify a revision-pinned preview | `vibex.projects.preview` |
 | `$vibex-pricing` | Inspect, confirm, set, and verify creator pricing | `vibex.projects.pricing` |
 | `$vibex-publish` | Prepare, confirm, and execute publication | `vibex.projects.publish` |
@@ -101,7 +104,7 @@ The Browser capability is not bundled with this plugin and does not use the user
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex plugin manifest
 ├── .mcp.json                    # Public OAuth MCP connection
-├── contracts/public-tools.json # Public 33-tool contract
+├── contracts/public-tools.json # Public 36-tool contract
 ├── skills/                      # Projects, maintenance, coding, preview, pricing, and publish skills
 ├── scripts/                     # Public-package build and validation
 ├── tests/                       # Boundary and contract tests

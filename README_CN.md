@@ -21,6 +21,9 @@
 - 首次连接一次完成七项 OAuth 授权，每个工具仍按更窄的操作权限执行校验。
 - 能力目录与 CC 保持同源；标准能力显示为已内置，Agent 默认关闭并只在精确确认后切换。
 - 提供脱敏健康诊断、不可变版本对比、确认式回滚、封面生成确认与隐私安全的聚合指标。
+- 上传本人项目的 PNG/JPEG/WebP 图片；服务端转为 WebP 后写入项目 CDN，并返回可写入源码的公开 HTTPS 地址。该操作不会改封面，也不会发布。
+- 上传本人项目的 MP4/MOV/WebM 短视频；服务端压成 H.264 MP4 后写入项目 CDN，并返回可写入源码的公开 HTTPS 地址。该操作不会改封面，也不会发布。
+- 用户提供的图片可设为封面：按 16:9 居中裁切为 1200×675 WebP，写入项目 CDN，并返回公开 HTTPS 地址。该操作不会发布。
 
 ## 安装与连接
 
@@ -62,8 +65,8 @@ https://vibex.runninghub.cn/mcp/vibex
 |---|---|---|
 | `$vibex-projects` | 查询、查看和创建本人项目 | `vibex.projects.read` 或 `vibex.projects.create` |
 | `$vibex-capabilities` | 查看内置能力并经确认开关 Agent | `vibex.projects.capabilities` |
-| `$vibex-maintenance` | 诊断、版本对比/回滚、封面与聚合指标 | `vibex.projects.read`、`edit` 或 `publish` |
-| `$vibex-coding` | 读取并安全编辑稳定源码版本 | `vibex.projects.read` 或 `vibex.projects.edit` |
+| `$vibex-maintenance` | 诊断、版本对比/回滚、封面生成或上传、聚合指标 | `vibex.projects.read`、`edit` 或 `publish` |
+| `$vibex-coding` | 读取并安全编辑稳定源码版本，必要时上传图片或短视频到 CDN | `vibex.projects.read` 或 `vibex.projects.edit` |
 | `$vibex-preview` | 准备并验证绑定版本的预览 | `vibex.projects.preview` |
 | `$vibex-pricing` | 查询、确认、设置并验证创作者定价 | `vibex.projects.pricing` |
 | `$vibex-publish` | 准备、确认并执行发布 | `vibex.projects.publish` |
@@ -102,7 +105,7 @@ Browser 能力不随本插件打包，也不会使用用户日常浏览器配置
 vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex 插件清单
 ├── .mcp.json                    # 公开 OAuth MCP 连接
-├── contracts/public-tools.json # 33 个公开工具的契约
+├── contracts/public-tools.json # 36 个公开工具的契约
 ├── skills/                      # 项目、能力、维护、编码、预览、定价和发布 Skill
 ├── scripts/                     # 公开包构建与校验脚本
 ├── tests/                       # 边界和契约测试

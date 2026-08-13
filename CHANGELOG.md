@@ -1,5 +1,25 @@
 # Changelog
 
+## 26.8.13-t1633
+
+- Store uploaded and successfully generated covers on the same project CDN as page images and videos, returning a public HTTPS URL.
+- Address cover objects by content hash so CDN caches are not overwritten when a cover is replaced.
+
+## 26.8.13-t1622
+
+- Add `vibex_upload_project_video` so Codex can submit an MP4, MOV, or WebM clip, have it transcoded to a compact H.264 MP4, store it on the project CDN, and receive a public HTTPS URL.
+- Cap source clips at 20 seconds and 8MB, keep audio when present, and leave cover replacement and publishing unchanged.
+
+## 26.8.13-t1611
+
+- Add `vibex_upload_cover` so a user-provided PNG, JPEG, or WebP can replace the saved project cover.
+- Center-crop uploaded covers to 16:9 at 1200x675 WebP without stretching, and keep this separate from publishing.
+
+## 26.8.13-t1557
+
+- Add `vibex_upload_project_image` so Codex can submit a PNG, JPEG, or WebP image, have it converted to WebP, store it on the project CDN, and receive a public HTTPS URL.
+- Keep image upload separate from cover generation and publishing; SVG, GIF, PDF, ZIP, and other attachments remain rejected.
+
 ## 26.8.13-t1231
 
 - Make the publication Skill server-driven so future publish-form and confirmation fields are surfaced instead of silently omitted.

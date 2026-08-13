@@ -72,7 +72,7 @@ def test_plugin_version_is_semver_safe_for_zero_padded_times() -> None:
 def test_contract_has_exact_tool_allowlist() -> None:
     contract = json.loads((ROOT / "contracts" / "public-tools.json").read_text())
     assert [tool["name"] for tool in contract["tools"]] == VALIDATOR.EXPECTED_TOOLS
-    assert len(contract["tools"]) == 33
+    assert len(contract["tools"]) == 36
     for tool in contract["tools"]:
         expected = [
             {"type": "oauth2", "scopes": VALIDATOR.EXPECTED_OAUTH_SCOPES}
@@ -88,6 +88,13 @@ def test_contract_has_exact_tool_allowlist() -> None:
     assert by_name["vibex_rollback_project"]["annotations"]["destructiveHint"] is True
     assert by_name["vibex_prepare_cover_generation"]["annotations"]["destructiveHint"] is False
     assert by_name["vibex_generate_cover"]["annotations"]["destructiveHint"] is True
+    assert by_name["vibex_upload_cover"]["scope"] == "vibex.projects.publish"
+    assert by_name["vibex_upload_cover"]["annotations"]["destructiveHint"] is True
+    assert by_name["vibex_upload_project_image"]["scope"] == "vibex.projects.edit"
+    assert by_name["vibex_upload_project_image"]["annotations"]["readOnlyHint"] is False
+    assert by_name["vibex_upload_project_image"]["annotations"]["destructiveHint"] is False
+    assert by_name["vibex_upload_project_video"]["scope"] == "vibex.projects.edit"
+    assert by_name["vibex_upload_project_video"]["annotations"]["readOnlyHint"] is False
 
 
 def test_runtime_contract_verifier_detects_cross_repository_drift(

@@ -49,6 +49,7 @@ EXPECTED_TOOLS = [
     "vibex_get_cover",
     "vibex_prepare_cover_generation",
     "vibex_generate_cover",
+    "vibex_upload_cover",
     "vibex_get_project_metrics",
     "vibex_get_source_tree",
     "vibex_read_source_file",
@@ -58,6 +59,8 @@ EXPECTED_TOOLS = [
     "vibex_apply_patch",
     "vibex_commit_edit",
     "vibex_cancel_edit",
+    "vibex_upload_project_image",
+    "vibex_upload_project_video",
     "vibex_prepare_preview",
     "vibex_get_pricing",
     "vibex_prepare_pricing",
@@ -214,7 +217,7 @@ def validate(root: Path = ROOT) -> list[str]:
         contract = {}
     names = [tool.get("name") for tool in contract.get("tools", [])]
     if names != EXPECTED_TOOLS:
-        errors.append("public contract must contain the exact ordered 33-tool allowlist")
+        errors.append("public contract must contain the exact ordered 36-tool allowlist")
     else:
         for tool in contract["tools"]:
             expected_security_schemes = _expected_security_schemes(tool.get("scope"))
