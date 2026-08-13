@@ -159,3 +159,11 @@ def test_preview_and_publish_are_separate_scopes() -> None:
     tools = {tool["name"]: tool for tool in contract["tools"]}
     assert tools["vibex_prepare_preview"]["scope"] == "vibex.projects.preview"
     assert tools["vibex_prepare_publish"]["scope"] == "vibex.projects.publish"
+
+
+def test_publish_skill_is_forward_compatible_with_server_fields() -> None:
+    skill = (ROOT / "skills" / "vibex-publish" / "SKILL.md").read_text()
+    assert "display every returned user-visible value" in skill
+    assert "newly returned field" in skill
+    assert "returned `confirmation` object" in skill
+    assert "hard-coded client field list" in skill

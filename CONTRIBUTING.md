@@ -14,7 +14,9 @@ Contributions should preserve the plugin's public-only boundary and fail-closed 
    cd <public-plugin-checkout>
    python3 scripts/verify_runtime_contract.py --runtime-contract /tmp/vibex-runtime-contract.json
    ```
-5. Run `python3 scripts/validate_public_package.py` and `python3 -m pytest -q` before submitting a change.
-6. Use the SemVer-safe `Y.M.D-tHHmm` release format, for example `26.8.7-t0930`; the `t` keeps zero-padded times valid as a prerelease identifier.
+6. For every user-facing VibeX feature, audit the complete release diff—not only the plugin repository. Update the affected Skill when the change adds a user action, `next_action`, confirmation field, assistant entry point, capability, or safety boundary. A server-driven form must render and confirm newly returned fields instead of relying on a frozen client-side allowlist.
+7. Record the cross-repository impact and validation result in the internal `doc/vibex-codex/新增功能自动同步与发布门禁.md` release log. Keep private topology and credentials out of this public repository.
+8. Run `python3 scripts/validate_public_package.py` and `python3 -m pytest -q` before submitting a change.
+9. Use the SemVer-safe `Y.M.D-tHHmm` release format, for example `26.8.7-t0930`; the `t` keeps zero-padded times valid as a prerelease identifier.
 
 Public releases must be created from the validator-approved package contents in a fresh public history. Private development history must not be copied into a public repository.

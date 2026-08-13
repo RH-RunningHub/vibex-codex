@@ -16,6 +16,7 @@
 - Preview the exact revision being reviewed with a short-lived launch URL.
 - Publish only after an explicit confirmation bound to the revision and target.
 - Inspect saved and effective creator pricing, with separate confirmations for pricing and publication.
+- Follow server-provided publish forms and confirmation payloads so newly introduced release fields are surfaced before publication.
 - Establish one complete seven-scope OAuth connection while enforcing each tool's narrower operation scope.
 - Read the CC-sourced capability catalog; standard capabilities are built in, while Agent defaults off and changes only after exact confirmation.
 - Diagnose health, compare immutable revisions, confirm rollbacks and cover generation, and read privacy-safe aggregate metrics.

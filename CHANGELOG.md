@@ -1,5 +1,10 @@
 # Changelog
 
+## 26.8.13-t1231
+
+- Make the publication Skill server-driven so future publish-form and confirmation fields are surfaced instead of silently omitted.
+- Add contributor and regression-test gates for cross-repository VibeX feature synchronization.
+
 ## 26.8.12-t2223
 
 - Add the canonical CC capability catalog and versioned project capability inspection.

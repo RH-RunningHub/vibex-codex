@@ -21,7 +21,7 @@ For every VibeX MCP call, if the transport reports an expired token, `AUTH_REQUI
 3. Call `vibex_get_publish_readiness` for that revision before presenting publish choices.
    - If `ready` is false, show the returned blocker or server-unavailable message and stop.
    - Do not prepare or execute a publish while readiness is blocked or unknown.
-4. Call `vibex_get_publish_form` and display the current values and available choices:
+4. Call `vibex_get_publish_form` and display every returned user-visible value, default, option, and constraint. The server response is authoritative; the known fields include:
    - Render `cover.url` as a Markdown image when present. State clearly when no cover exists.
    - Title and summary.
    - Test or production environment.
@@ -32,15 +32,18 @@ For every VibeX MCP call, if the transport reports an expired token, `AUTH_REQUI
    - URL mode and slug when applicable.
    - Whether development backend data will be reset.
    - Creator pricing: configured and effective percentages, synchronization state, whether this release activates pricing, and whether the pricing revision is still current.
-5. Ask the user to confirm or change every value. Never silently reuse defaults for a destructive or public-facing option.
+5. Also surface any newly returned field that is not in the known list. Preserve its server-provided name, value, choices, dependency, and constraint instead of silently dropping it. If its effect is unclear or the server does not provide a safe selectable/default value, stop before preparation and explain which field needs an updated contract or product decision.
+6. Ask the user to confirm or change every value. Never silently reuse defaults for a destructive or public-facing option.
 
 ## Prepare and explicit confirmation
 
-Call `vibex_prepare_publish` with all selected values and a fresh idempotency key. Show a human-readable confirmation card containing the returned cover, title, summary, revision, environment, visibility, gallery settings, category, remix setting, URL choice, and data-reset setting.
+Call `vibex_prepare_publish` with all selected values accepted by the current tool schema and a fresh idempotency key. Build the human-readable confirmation card from the returned `confirmation` object, not from a hard-coded client field list. Show every returned confirmation field, including the cover, title, summary, revision, environment, visibility, gallery settings, category, remix setting, URL choice, data-reset setting, creator pricing, and any field added by a newer server contract.
 
 Put `confirmation_digest` under a short “technical details” section; the digest is not the confirmation UI. Ask the user to explicitly confirm that exact card. If pricing configuration changed after preparation, discard the intent and prepare again. Do not call `vibex_publish_project` in the same step unless the current user message already unambiguously confirms the complete displayed card.
 
 Any change to the project owner, source revision, cover, title, summary, target, visibility, gallery settings, categories, remix setting, URL/slug, domain, or reset setting invalidates the old intent. Prepare a new one.
+
+If the server adds another confirmation-bound field, treat changing that field as invalidating the old intent too. Never reconstruct, omit, rename, or normalize an unfamiliar confirmation value on the client; display the returned value and require the user to confirm the complete card.
 
 ## Publish and poll
 
