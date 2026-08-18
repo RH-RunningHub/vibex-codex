@@ -1,5 +1,10 @@
 # Changelog
 
+## 26.8.18-t1720
+
+- Surface structured `error_detail` from publish operation polling (audit verdict plus a bounded findings summary) so a rejected publish explains which rules failed and which files to fix.
+- Document that `SOURCE_CHANGED` errors now carry `revisions_behind`, `intervening_changes` (writer and timestamp), and a `hint`, so the agent tells the user who changed the source before re-planning.
+
 ## 26.8.13-t1633
 
 - Store uploaded and successfully generated covers on the same project CDN as page images and videos, returning a public HTTPS URL.

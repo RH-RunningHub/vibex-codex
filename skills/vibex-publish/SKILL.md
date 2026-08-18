@@ -52,10 +52,10 @@ After explicit confirmation, call `vibex_publish_project` once with the single-u
 Poll `vibex_get_operation_status` until a terminal state:
 
 - Poll after 2, 4, 8, then 10 seconds, capped at 10 seconds.
-- Parse only structured `state`, `phase`, `error_code`, `retryable`, and `next_action` fields.
+- Parse only structured `state`, `phase`, `error_code`, `retryable`, `next_action`, and `error_detail` fields.
 - Reset the consecutive transport-failure count after any successful response.
 - After five consecutive transport failures, stop polling and report that the result is unknown. Keep the operation ID for later recovery; never create another release automatically.
-- `FAILED`, `CANCELED`, and `TIMED_OUT` are terminal. Show the server error and guidance; do not automatically retry a business failure.
+- `FAILED`, `CANCELED`, and `TIMED_OUT` are terminal. Show the server error and guidance; do not automatically retry a business failure. When `error_detail` is present (for example an audit verdict with a bounded findings summary), show its rule IDs, messages, and affected files so the user knows exactly why the publish was rejected and what to fix.
 - `UNKNOWN` means recovery is required. Report it and do not republish.
 - For a long-running operation, give a concise phase update at least every 30 seconds.
 
