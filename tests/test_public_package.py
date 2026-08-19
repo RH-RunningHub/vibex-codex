@@ -174,3 +174,12 @@ def test_publish_skill_is_forward_compatible_with_server_fields() -> None:
     assert "newly returned field" in skill
     assert "returned `confirmation` object" in skill
     assert "hard-coded client field list" in skill
+
+
+def test_coding_skill_recovers_historical_revision_and_seal_flags() -> None:
+    skill = (ROOT / "skills" / "vibex-coding" / "SKILL.md").read_text()
+    assert "SOURCE_REVISION_ID_CONFLICT" in skill
+    assert "already-known revision" in skill
+    assert "flagged" in skill
+    assert "will not be exported" in skill
+    assert "SOURCE_CHANGED" in skill

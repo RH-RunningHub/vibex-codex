@@ -1,5 +1,10 @@
 # Changelog
 
+## 26.8.20-t0015
+
+- Recover from `SOURCE_REVISION_ID_CONFLICT` as an already-known revision (undo, history restore, or oversized files stripped) instead of looping a new edit session.
+- Treat commit/initialize `flagged` paths as advisory “saved but will not be exported” metadata, not a failed save.
+
 ## 26.8.18-t1720
 
 - Surface structured `error_detail` from publish operation polling (audit verdict plus a bounded findings summary) so a rejected publish explains which rules failed and which files to fix.
