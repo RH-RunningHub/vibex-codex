@@ -1,6 +1,6 @@
 interface:
   display_name: "VibeX 能力"
-  short_description: "查看内置能力并经确认安全开关 Agent 能力"
+  short_description: "查看必选与可选能力并经确认安全开关可选能力"
   default_prompt: "使用 $vibex-capabilities 查看并设置我的 VibeX 项目能力。"
 dependencies:
   tools:

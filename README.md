@@ -18,7 +18,7 @@
 - Inspect saved and effective creator pricing, with separate confirmations for pricing and publication.
 - Follow server-provided publish forms and confirmation payloads so newly introduced release fields are surfaced before publication.
 - Establish one complete seven-scope OAuth connection while enforcing each tool's narrower operation scope.
-- Read the CC-sourced capability catalog; standard capabilities are built in, while Agent defaults off and changes only after exact confirmation.
+- Read the CC-sourced capability catalog for the project's locked flow; required capabilities stay on, and optional ones change only after exact confirmation of conflicts and billing impact.
 - Diagnose health, compare immutable revisions, confirm rollbacks and cover generation, and read privacy-safe aggregate metrics.
 - Upload owner-bound PNG/JPEG/WebP images; the service converts them to WebP, stores them on the project CDN, and returns a public HTTPS URL for use in source. This does not set the cover or publish.
 - Upload owner-bound MP4/MOV/WebM clips; the service transcodes them to compact H.264 MP4, stores them on the project CDN, and returns a public HTTPS URL. This does not set the cover or publish.
@@ -50,8 +50,8 @@ Use VibeX Publish to prepare a release for my confirmation.
 
 The normal workflow is:
 
-1. `$vibex-projects` resolves or explicitly creates one owned project.
-2. `$vibex-capabilities` inspects built-ins and separately confirms optional Agent changes.
+1. `$vibex-projects` resolves or explicitly creates one owned project. New web projects omit `enabled_capabilities` so the server applies flow defaults (RH login and Open Design); pass `[]` only for an explicit minimal project.
+2. `$vibex-capabilities` inspects the server-returned required and optional lists and separately confirms optional changes, including any owner-billing consequence.
 3. `$vibex-coding` pins a source revision, displays a bounded file plan, applies patches in an isolated workspace, and commits a new stable revision.
 4. `$vibex-preview` prepares and verifies a short-lived preview for that exact revision.
 5. `$vibex-pricing` inspects or explicitly changes creator pricing, then verifies saved and effective state.
@@ -62,8 +62,8 @@ The normal workflow is:
 
 | Skill | Purpose | Operation scope enforced by the tool |
 |---|---|---|
-| `$vibex-projects` | Find, inspect, and create owned projects | `vibex.projects.read` or `vibex.projects.create` |
-| `$vibex-capabilities` | Inspect built-ins and confirm optional Agent changes | `vibex.projects.capabilities` |
+| `$vibex-projects` | Find, inspect, and create owned projects; omit `enabled_capabilities` on create unless the user asks for a minimal or named set | `vibex.projects.read` or `vibex.projects.create` |
+| `$vibex-capabilities` | Inspect the server-returned required/optional split and confirm optional changes, including conflicts and owner billing | `vibex.projects.capabilities` |
 | `$vibex-maintenance` | Diagnose, compare/rollback, manage covers, and read aggregate metrics | `vibex.projects.read`, `edit`, or `publish` |
 | `$vibex-coding` | Read and safely edit a stable source revision, uploading images or short videos to the project CDN when needed | `vibex.projects.read` or `vibex.projects.edit` |
 | `$vibex-preview` | Prepare and verify a revision-pinned preview | `vibex.projects.preview` |
@@ -71,6 +71,19 @@ The normal workflow is:
 | `$vibex-publish` | Prepare, confirm, and execute publication | `vibex.projects.publish` |
 
 The MCP transport establishes all seven scopes in one connection so every tool can be discovered reliably. Operation-status polling accepts any project scope, while each state-changing tool still enforces its own scope and user-intent boundary.
+
+## Project capabilities
+
+The capability catalog is server-sourced. Treat `vibex_list_capabilities` and `vibex_get_project_capabilities` as authoritative; do not hard-code a complete list.
+
+- Capabilities are split by the project's **locked flow** into **required** (always on, cannot be disabled) and **optional** (user-toggleable).
+- The flow is chosen at create time and cannot be changed later by this plugin.
+- Hidden required items are not user-toggleable and must not be switched by the assistant.
+- Conflicting optional capabilities cannot be enabled together. The returned `conflicts` field is authoritative; `local-auth` and `rh-login` are one such pair.
+- Enabling `local-auth` switches live AI usage for the published app to the creator's owner billing. Confirm that billing change before applying, then report the returned `billing_mode` as-is.
+- Names such as `rh-login`, `design-open-design`, `local-auth`, or `rh-agent` are examples only. Use the `required` and `optional` lists returned for the current project.
+
+A previous edit, preview, pricing, rollback, or publish confirmation does not authorize a capability change.
 
 ## Security model
 
@@ -105,7 +118,7 @@ vibex-codex/
 ├── .codex-plugin/plugin.json    # Codex plugin manifest
 ├── .mcp.json                    # Public OAuth MCP connection
 ├── contracts/public-tools.json # Public 36-tool contract
-├── skills/                      # Projects, maintenance, coding, preview, pricing, and publish skills
+├── skills/                      # Projects, capabilities, maintenance, coding, preview, pricing, and publish skills
 ├── scripts/                     # Public-package build and validation
 ├── tests/                       # Boundary and contract tests
 └── assets/                      # Plugin artwork

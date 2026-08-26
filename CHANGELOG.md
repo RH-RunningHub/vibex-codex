@@ -1,5 +1,12 @@
 # Changelog
 
+## 26.8.26-t1634
+
+- Teach capabilities to follow the server-returned required/optional split for the project's locked flow instead of treating standard capabilities as always built in and Agent as the only selectable switch.
+- Require explicit confirmation before enabling `local-auth`, including the automatic switch of live AI usage to creator owner billing, and report the returned `billing_mode`.
+- Omit `enabled_capabilities` on create so the server applies flow defaults; pass `[]` only for an explicit minimal project.
+- Document the required/optional catalog, create defaults, conflicts, and `local-auth` owner billing in the public README.
+
 ## 26.8.20-t0015
 
 - Recover from `SOURCE_REVISION_ID_CONFLICT` as an already-known revision (undo, history restore, or oversized files stripped) instead of looping a new edit session.

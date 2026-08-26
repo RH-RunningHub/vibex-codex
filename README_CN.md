@@ -19,7 +19,7 @@
 - 发布表单和确认卡以服务端返回为准，后续新增的发布字段也会在执行前展示并确认。
 - OAuth 访问令牌过期时自动请求刷新；自动恢复失败时给出明确的重新授权入口，不再绕到浏览器上传。
 - 首次连接一次完成七项 OAuth 授权，每个工具仍按更窄的操作权限执行校验。
-- 能力目录与 CC 保持同源；标准能力显示为已内置，Agent 默认关闭并只在精确确认后切换。
+- 能力目录与 CC 保持同源，按项目锁定的流分为必选与可选；必选保持开启，可选只在确认互斥与计费影响后切换。
 - 提供脱敏健康诊断、不可变版本对比、确认式回滚、封面生成确认与隐私安全的聚合指标。
 - 上传本人项目的 PNG/JPEG/WebP 图片；服务端转为 WebP 后写入项目 CDN，并返回可写入源码的公开 HTTPS 地址。该操作不会改封面，也不会发布。
 - 上传本人项目的 MP4/MOV/WebM 短视频；服务端压成 H.264 MP4 后写入项目 CDN，并返回可写入源码的公开 HTTPS 地址。该操作不会改封面，也不会发布。
@@ -51,8 +51,8 @@ https://vibex.runninghub.cn/mcp/vibex
 
 标准流程如下：
 
-1. `$vibex-projects` 查询、选择或明确新建一个本人项目。
-2. `$vibex-capabilities` 查看内置能力，按需经单独确认启用 Agent。
+1. `$vibex-projects` 查询、选择或明确新建一个本人项目。新建网站项目时省略 `enabled_capabilities`，由服务端套用流默认值（RH 登录与 Open Design）；只有用户明确要求最小集时才传 `[]`。
+2. `$vibex-capabilities` 以服务端返回的必选/可选清单为准，按需经单独确认开关可选能力，并讲清任何 owner 计费后果。
 3. `$vibex-coding` 固定源码版本、展示有限文件计划，在隔离工作区应用补丁并提交新稳定版本。
 4. `$vibex-preview` 为该精确版本准备短期预览并执行验证。
 5. `$vibex-pricing` 查询或在单独明确确认后设置创作者定价，并验证保存值、线上生效值及是否需要重新发布。
@@ -63,8 +63,8 @@ https://vibex.runninghub.cn/mcp/vibex
 
 | Skill | 用途 | 工具执行时校验的操作权限 |
 |---|---|---|
-| `$vibex-projects` | 查询、查看和创建本人项目 | `vibex.projects.read` 或 `vibex.projects.create` |
-| `$vibex-capabilities` | 查看内置能力并经确认开关 Agent | `vibex.projects.capabilities` |
+| `$vibex-projects` | 查询、查看和创建本人项目；创建时默认省略 `enabled_capabilities`，除非用户要求最小集或点名可选能力 | `vibex.projects.read` 或 `vibex.projects.create` |
+| `$vibex-capabilities` | 查看服务端返回的必选/可选清单，经确认开关可选能力（含互斥与 owner 计费） | `vibex.projects.capabilities` |
 | `$vibex-maintenance` | 诊断、版本对比/回滚、封面生成或上传、聚合指标 | `vibex.projects.read`、`edit` 或 `publish` |
 | `$vibex-coding` | 读取并安全编辑稳定源码版本，必要时上传图片或短视频到 CDN | `vibex.projects.read` 或 `vibex.projects.edit` |
 | `$vibex-preview` | 准备并验证绑定版本的预览 | `vibex.projects.preview` |
@@ -72,6 +72,19 @@ https://vibex.runninghub.cn/mcp/vibex
 | `$vibex-publish` | 准备、确认并执行发布 | `vibex.projects.publish` |
 
 MCP 传输层会在首次连接时一次建立七项权限，确保所有工具都能稳定发现。任务状态查询接受任意项目权限，而所有状态变更工具仍会校验自己的操作权限和用户意图边界。
+
+## 项目能力
+
+能力目录以服务端为准。请把 `vibex_list_capabilities` 和 `vibex_get_project_capabilities` 的返回当作权威来源，不要在客户端写死完整清单。
+
+- 能力按项目**锁定的流**分为**必选**（始终开启、不可关闭）和**可选**（用户可开关）。
+- 流在创建时选定，本插件之后不能更换。
+- 隐藏的必选项不可由用户或助手开关。
+- 互斥的可选能力不能同时启用；以返回的 `conflicts` 字段为准，`local-auth` 与 `rh-login` 是其中一对。
+- 开启 `local-auth` 会把该已发布应用的线上 AI 用量切到创作者 owner 计费。应用前必须单独确认这一计费变化，并如实报告返回的 `billing_mode`。
+- `rh-login`、`design-open-design`、`local-auth`、`rh-agent` 等名称只是示例，以当前项目返回的 `required` / `optional` 列表为准。
+
+此前的编辑、预览、定价、回滚或发布确认，都不能用来授权一次能力变更。
 
 ## 安全模型
 

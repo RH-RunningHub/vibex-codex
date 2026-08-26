@@ -23,7 +23,7 @@ Only project-owner results are valid. A not-found response for a supplied ID mus
 
 Create only after the user clearly asks for a new project and the project name is known.
 
-1. Call `vibex_create_project` with `app_type: web`, a fresh idempotency key, and `enabled_capabilities: []` unless the user explicitly asked to enable Agent. If the service reports an authentication or scope error, renew the complete VibeX OAuth connection, then retry the same request with the same idempotency key.
+1. Call `vibex_create_project` with `app_type: web` and a fresh idempotency key. Omit `enabled_capabilities` so the server applies the flow defaults (a web project defaults to RH login and Open Design). Pass `enabled_capabilities: []` only when the user explicitly asks for a minimal project with every optional capability off. When the user names optional capabilities to enable, pass the complete target list. If the service reports an authentication or scope error, renew the complete VibeX OAuth connection, then retry the same request with the same idempotency key.
 2. Poll the returned `operation_id` with `vibex_get_operation_status`; never repeat create to speed it up.
 3. On success, call `vibex_get_project` and retain the initial stable revision.
 4. Hand off to `$vibex-preview` when the user wants to inspect the initial project, or `$vibex-coding` when they requested implementation work.
