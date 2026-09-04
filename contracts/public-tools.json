@@ -244,7 +244,7 @@
     {
       "name": "vibex_list_capabilities",
       "title": "List VibeX capabilities",
-      "description": "List the canonical CC capability catalog, including built-in and selectable capabilities.",
+      "description": "List the canonical CC capability catalog for one app type. The response splits `required` capabilities (always enabled for the flow) from `optional` ones; `options` is a legacy alias that still lists only the optional entries.",
       "scope": "vibex.projects.capabilities",
       "inputSchema": {
         "properties": {
@@ -310,7 +310,7 @@
     {
       "name": "vibex_get_project_capabilities",
       "title": "Get project capabilities",
-      "description": "Read one owned project's versioned capability configuration and apply status.",
+      "description": "Read one owned project's versioned capability configuration and apply status. `required` entries are always enabled, `optional` entries carry per-item `enabled`, `options` is the merged required+optional view, and `effective_capabilities` follows the project's locked flow baseline.",
       "scope": "vibex.projects.capabilities",
       "inputSchema": {
         "properties": {
@@ -466,7 +466,7 @@
     {
       "name": "vibex_set_project_capabilities",
       "title": "Set project capabilities",
-      "description": "Apply one prepared capability change only after the user explicitly confirms its exact digest.",
+      "description": "Apply one prepared capability change only after the user explicitly confirms its exact digest. The result echoes the effective configuration and the resulting `billing_mode`; enabling the local-auth capability switches billing to the project owner.",
       "scope": "vibex.projects.capabilities",
       "inputSchema": {
         "properties": {
