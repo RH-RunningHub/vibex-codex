@@ -1,5 +1,11 @@
 # Changelog
 
+## 26.10.23-t1430
+
+- Follow the server's publish failure guidance: after an audit rejection (`show_error_and_do_not_retry_automatically`), stop instead of preparing the same revision again; the same revision always receives the same verdict.
+- Treat retryable publish failures (`PUBLISH_FAILED`, `PUBLISH_BUILD_FAILED`, `PUBLISH_INTERRUPTED`) as service failures: wait `retry_after_seconds`, re-check readiness, prepare a new explicitly confirmed intent, and retry at most twice per request.
+- Handle operations the server finalizes after losing its task: publish `UNKNOWN`/`PUBLISH_INTERRUPTED` may already be live and must be queried, not republished; commit `UNKNOWN`/`reconciliation_required` is not a failed save to redo.
+
 ## 26.8.26-t1634
 
 - Teach capabilities to follow the server-returned required/optional split for the project's locked flow instead of treating standard capabilities as always built in and Agent as the only selectable switch.

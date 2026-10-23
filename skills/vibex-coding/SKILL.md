@@ -32,6 +32,7 @@ Use `vibex_cancel_edit` when the user cancels or when uncommitted work cannot sa
 - On an expired lease or stale fencing token, do not retry a write with old values. Fetch the project again and wait for the server to reap the expired session. Start a new edit from the latest stable revision only after the project reports `source_state=CLEAN`; if it remains `EDITING`, report the stuck session instead of repeatedly calling `vibex_begin_edit`.
 - On a path-policy, patch, validation, or staging-hash error, keep the stable revision unchanged and report the exact safe error code.
 - On an uncertain commit operation, query `vibex_get_operation_status`; do not submit a second commit.
+- A commit operation that ends `UNKNOWN` with `phase=reconciliation_required` (including `OPERATION_INTERRUPTED`, when the server lost the commit task) is not a failed save to redo. Do not commit again. Fetch the project, wait for `source_state=CLEAN`, keep the stable revision the server reports, and start a new edit only if the intended change is missing from it.
 
 ## Boundaries
 

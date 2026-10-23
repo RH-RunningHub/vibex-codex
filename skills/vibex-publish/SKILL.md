@@ -55,8 +55,11 @@ Poll `vibex_get_operation_status` until a terminal state:
 - Parse only structured `state`, `phase`, `error_code`, `retryable`, `next_action`, and `error_detail` fields.
 - Reset the consecutive transport-failure count after any successful response.
 - After five consecutive transport failures, stop polling and report that the result is unknown. Keep the operation ID for later recovery; never create another release automatically.
-- `FAILED`, `CANCELED`, and `TIMED_OUT` are terminal. Show the server error and guidance; do not automatically retry a business failure. When `error_detail` is present (for example an audit verdict with a bounded findings summary), show its rule IDs, messages, and affected files so the user knows exactly why the publish was rejected and what to fix.
-- `UNKNOWN` means recovery is required. Report it and do not republish.
+- `FAILED`, `CANCELED`, and `TIMED_OUT` are terminal. Show the server error and guidance. When `error_detail` is present (for example an audit verdict with a bounded findings summary), show its rule IDs, messages, and affected files so the user knows exactly why the publish was rejected and what to fix. Then follow `next_action`:
+  - `show_error_and_do_not_retry_automatically` (for example `PUBLISH_AUDIT_FAILED`): stop. Do not prepare or publish again for the same `source_revision`; the same revision always receives the same verdict. Another attempt needs source changes that produce a new stable revision and a new explicit user request.
+  - `retry_with_new_publish_intent` with `retryable=true` (for example `PUBLISH_FAILED`, `PUBLISH_BUILD_FAILED`, or `PUBLISH_INTERRUPTED`): the publish service failed, not the project. Tell the user, wait at least `retry_after_seconds`, call `vibex_get_publish_readiness` again, and prepare a new intent that the user explicitly confirms. The old intent is already consumed; never replay it. Make at most two such retries for one user request, then stop and report.
+- `UNKNOWN` means recovery is required. Report it and do not republish. `UNKNOWN` with `PUBLISH_INTERRUPTED` means the server lost the task after building started, so the release may already be live; query the project and the same operation instead of publishing again.
+- If the operation stays `RUNNING`, keep its operation ID and query it later. The server finalizes operations that it can no longer complete; never start a second release to get unstuck.
 - For a long-running operation, give a concise phase update at least every 30 seconds.
 
 On `SUCCEEDED`, show the publish URL and verify it when the client can safely do so. A verification failure does not authorize a second publish; query the same operation instead.
