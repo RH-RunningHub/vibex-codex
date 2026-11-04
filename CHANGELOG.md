@@ -1,5 +1,10 @@
 # Changelog
 
+## 26.11.4-t1512
+
+- Support per-model creator pricing: `vibex_prepare_pricing` accepts optional `override_rules` (one model by `sku_id`, or one model family by `endpoint_prefix`; at most 50). Omitting the list keeps the saved rules; a sent list replaces them as a whole, and `[]` clears them only on explicit request. Every applied rule appears on the confirmation card.
+- Sync the public MCP contract to runtime contract 1.9.0.
+
 ## 26.10.23-t1430
 
 - Follow the server's publish failure guidance: after an audit rejection (`show_error_and_do_not_retry_automatically`), stop instead of preparing the same revision again; the same revision always receives the same verdict.

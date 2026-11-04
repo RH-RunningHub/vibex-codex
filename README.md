@@ -15,7 +15,7 @@
 - Apply path-scoped patches inside isolated, lease-protected edit sessions.
 - Preview the exact revision being reviewed with a short-lived launch URL.
 - Publish only after an explicit confirmation bound to the revision and target.
-- Inspect saved and effective creator pricing, with separate confirmations for pricing and publication.
+- Inspect saved and effective creator pricing, including per-model overrides, with separate confirmations for pricing and publication.
 - Follow server-provided publish forms and confirmation payloads so newly introduced release fields are surfaced before publication.
 - Establish one complete seven-scope OAuth connection while enforcing each tool's narrower operation scope.
 - Read the CC-sourced capability catalog for the project's locked flow; required capabilities stay on, and optional ones change only after exact confirmation of conflicts and billing impact.

@@ -1,6 +1,6 @@
 ---
 name: vibex-pricing
-description: Safely inspect, enable, prepare, confirm, apply, and verify VibeX creator pricing for an owned project. Use when the user asks about creator pricing, markup, custom pricing, visitor model-call prices, pricing eligibility, a pricing upgrade, changing a markup percentage, disabling markup, or whether a configured price is live.
+description: Safely inspect, enable, prepare, confirm, apply, and verify VibeX creator pricing for an owned project. Use when the user asks about creator pricing, markup, custom pricing, visitor model-call prices, pricing eligibility, a pricing upgrade, changing a markup percentage, per-model or model-family pricing overrides, disabling markup, or whether a configured price is live.
 ---
 
 # VibeX Creator Pricing
@@ -28,6 +28,8 @@ Never switch to browser upload, local files, or another channel.
    state, and whether publication is still required. Do not claim that a saved
    percentage is live when `effective_markup_bps` is zero or
    `requires_republish=true`.
+5. When `override_rules` or priced `models` are present, also show each saved
+   per-model or per-family percentage and its effective value.
 
 Follow the server result:
 
@@ -91,6 +93,27 @@ user to explicitly confirm that exact card. A generic “继续” from before t
 card, an edit approval, a preview approval, or a publish approval is not pricing
 confirmation. Any change to project, revision, current pricing revision, target
 percentage, or confirmation card invalidates the intent.
+
+## Per-model overrides
+
+`vibex_prepare_pricing` also accepts optional `override_rules`: the complete list
+of per-model percentages that applies alongside the default percentage.
+
+- `{"kind": "sku", "sku_id": "<id>", "bps": <n>}` prices one model. Take
+  `sku_id` only from the `models` returned by `vibex_get_pricing`.
+- `{"kind": "family", "endpoint_prefix": "/<family>", "bps": <n>}` prices every
+  endpoint of one model family. Use the model's `rh_endpoint` without its final
+  action segment, for example `/<family>` for `/<family>/image-to-image`.
+
+The list replaces the saved rules as a whole. Omit `override_rules` to keep the
+saved rules unchanged. To add, change, or remove one rule, send the complete
+updated list built from the current `override_rules`. Send `[]` only when the
+user explicitly asks to clear every per-model price. Never exceed `max_bps` or
+50 rules, and never invent a SKU or prefix that the server did not return.
+
+List every per-model rule that will apply (model or family, current and target
+percentage) on the confirmation card. Changing any rule invalidates a previously
+prepared intent.
 
 ## Apply and verify
 

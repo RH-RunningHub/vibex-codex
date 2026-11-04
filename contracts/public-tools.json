@@ -1,6 +1,6 @@
 {
-  "contractVersion": "1.8.0",
-  "minimumPluginVersion": "1.8.0",
+  "contractVersion": "1.9.0",
+  "minimumPluginVersion": "1.9.0",
   "tools": [
     {
       "name": "vibex_list_projects",
@@ -2415,7 +2415,7 @@
     {
       "name": "vibex_get_pricing",
       "title": "Get VibeX creator pricing",
-      "description": "Read the current creator markup, protocol eligibility, active-release effect, republish requirement, and RH synchronization state for an exact source revision.",
+      "description": "Read the current creator markup, saved per-model override rules, priced models, max_bps, protocol eligibility, active-release effect, republish requirement, and RH synchronization state for an exact source revision.",
       "scope": "vibex.projects.pricing",
       "inputSchema": {
         "properties": {
@@ -2489,9 +2489,70 @@
     {
       "name": "vibex_prepare_pricing",
       "title": "Prepare VibeX creator-pricing confirmation",
-      "description": "Prepare a single-use financial-effect summary for one markup percentage. This does not change visitor pricing.",
+      "description": "Prepare a single-use financial-effect summary for one default markup percentage and optional per-model override rules (kind=sku with sku_id, or kind=family with endpoint_prefix). Omit override_rules to keep the saved rules; pass an empty list only when the user wants to clear them. This does not change visitor pricing.",
       "scope": "vibex.projects.pricing",
       "inputSchema": {
+        "$defs": {
+          "FamilyMarkupOverride": {
+            "additionalProperties": false,
+            "description": "Per-model markup for every RH endpoint under one model-family endpoint prefix.",
+            "properties": {
+              "kind": {
+                "const": "family",
+                "title": "Kind",
+                "type": "string"
+              },
+              "endpoint_prefix": {
+                "maxLength": 123,
+                "pattern": "^/?[A-Za-z0-9][A-Za-z0-9._/-]{3,121}$",
+                "title": "Endpoint Prefix",
+                "type": "string"
+              },
+              "bps": {
+                "maximum": 10000,
+                "minimum": 0,
+                "title": "Bps",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "kind",
+              "endpoint_prefix",
+              "bps"
+            ],
+            "title": "FamilyMarkupOverride",
+            "type": "object"
+          },
+          "SkuMarkupOverride": {
+            "additionalProperties": false,
+            "description": "Per-model markup for one RH SKU (``sku_id`` as listed by ``vibex_get_pricing``).",
+            "properties": {
+              "kind": {
+                "const": "sku",
+                "title": "Kind",
+                "type": "string"
+              },
+              "sku_id": {
+                "pattern": "^[1-9][0-9]{0,18}$",
+                "title": "Sku Id",
+                "type": "string"
+              },
+              "bps": {
+                "maximum": 10000,
+                "minimum": 0,
+                "title": "Bps",
+                "type": "integer"
+              }
+            },
+            "required": [
+              "kind",
+              "sku_id",
+              "bps"
+            ],
+            "title": "SkuMarkupOverride",
+            "type": "object"
+          }
+        },
         "properties": {
           "app_id": {
             "maxLength": 160,
@@ -2517,6 +2578,36 @@
             "minLength": 8,
             "title": "Idempotency Key",
             "type": "string"
+          },
+          "override_rules": {
+            "anyOf": [
+              {
+                "items": {
+                  "discriminator": {
+                    "mapping": {
+                      "family": "#/$defs/FamilyMarkupOverride",
+                      "sku": "#/$defs/SkuMarkupOverride"
+                    },
+                    "propertyName": "kind"
+                  },
+                  "oneOf": [
+                    {
+                      "$ref": "#/$defs/SkuMarkupOverride"
+                    },
+                    {
+                      "$ref": "#/$defs/FamilyMarkupOverride"
+                    }
+                  ]
+                },
+                "maxItems": 50,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Override Rules"
           }
         },
         "required": [
